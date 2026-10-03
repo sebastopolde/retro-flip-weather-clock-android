@@ -11,7 +11,7 @@ L’émulateur `HTCClock_API36` contient l’application et le widget 4×2. Le w
 
 ## Vérifications automatisées
 
-- `tools\test.ps1` compile l’APK et exécute les 11 tests unitaires.
+- `tools\test.ps1` compile l’APK et exécute les 13 tests unitaires.
 - APK de développement : `app\build\outputs\apk\debug\app-debug.apk`.
 - Paquet Android : `fr.papycha.htcweatherclock`.
 - Compatibilité déclarée : Android 6/API 23 à Android 16/API 36.

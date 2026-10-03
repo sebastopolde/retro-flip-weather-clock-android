@@ -19,5 +19,6 @@ object OpenMeteoClient {
             val json = get("https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1")
             WeatherRepository.resolve(json, previous, System.currentTimeMillis(), name)
         }
-    } catch (_: Exception) { WeatherResult(previous, false) }
+    } catch (_: java.io.IOException) { WeatherResult(previous, fresh = false, retryable = true) }
+      catch (_: Exception) { WeatherResult(previous, fresh = false, retryable = false) }
 }

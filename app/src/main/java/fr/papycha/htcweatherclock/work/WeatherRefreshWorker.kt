@@ -16,7 +16,10 @@ class WeatherRefreshWorker(context: Context, params: WorkerParameters) : Worker(
         val result = OpenMeteoClient.fetch(WidgetPreferences.city(applicationContext, id), previous)
         result.snapshot?.let { WidgetPreferences.setWeather(applicationContext, it, id) }
         AppWidgetManager.getInstance(applicationContext).updateAppWidget(id, WidgetRenderer.render(applicationContext, id))
-        return if (result.fresh) Result.success() else Result.retry()
+        return when (RefreshDecision.from(result)) {
+            RefreshDecision.COMPLETE -> Result.success()
+            RefreshDecision.RETRY -> Result.retry()
+        }
     }
 
     companion object { const val KEY_WIDGET_ID = "widget_id" }
