@@ -1,5 +1,16 @@
 $ErrorActionPreference = 'Stop'
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
+$forbiddenRemoteViews = Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\layout') -Filter 'widget_*.xml' |
+    Select-String -Pattern '<View(?:\s|>)'
+if ($forbiddenRemoteViews) { throw "Vue interdite dans un layout RemoteViews : $($forbiddenRemoteViews.Path):$($forbiddenRemoteViews.LineNumber)" }
+$androidNamespace = 'http://schemas.android.com/apk/res/android'
+Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\layout') -Filter 'widget_*.xml' | ForEach-Object {
+    [xml]$layout = Get-Content -Raw -LiteralPath $_.FullName
+    $missingDimensions = @($layout.SelectNodes('//*') | Where-Object {
+        -not $_.HasAttribute('layout_width', $androidNamespace) -or -not $_.HasAttribute('layout_height', $androidNamespace)
+    })
+    if ($missingDimensions) { throw "Dimensions directes manquantes dans le layout RemoteViews $($_.Name) : $($missingDimensions[0].Name)" }
+}
 & (Join-Path $PSScriptRoot 'build.ps1')
 . (Join-Path $PSScriptRoot 'env.ps1')
 $cache = Join-Path $env:USERPROFILE '.gradle\caches\modules-2\files-2.1'

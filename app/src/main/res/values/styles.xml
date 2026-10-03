@@ -31,6 +31,19 @@
         <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+    <style name="HtcForecastColumn">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    <style name="HtcForecastIcon">
+        <item name="android:layout_width">38dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
     <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item><item name="android:colorAccent">#A8C93E</item><item name="android:navigationBarColor">#0B1013</item><item name="android:statusBarColor">#0B1013</item><item name="android:windowLightStatusBar">false</item>
     </style>
