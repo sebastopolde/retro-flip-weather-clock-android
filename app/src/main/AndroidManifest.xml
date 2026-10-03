@@ -13,9 +13,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
-                <action android:name="fr.papycha.htcweatherclock.REFRESH"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/flip_clock_widget_info"/>
         </receiver>
+        <receiver android:name=".widget.WidgetRefreshReceiver" android:exported="false"/>
     </application>
 </manifest>

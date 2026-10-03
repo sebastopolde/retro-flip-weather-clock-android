@@ -14,4 +14,6 @@ $classpath = @(
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
-    fr.papycha.htcweatherclock.weather.WeatherRepositoryTest
+    fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
+    fr.papycha.htcweatherclock.storage.WeatherStorageCodecTest
+if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }

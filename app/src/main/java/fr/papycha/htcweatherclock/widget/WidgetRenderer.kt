@@ -19,8 +19,9 @@ object WidgetRenderer {
         return RemoteViews(context.packageName, layout).apply {
             setTextViewText(R.id.weather_symbol, weather?.symbol ?: "☁"); setTextViewText(R.id.temperature, weather?.let { "${it.temperature}°" } ?: "--°")
             setTextViewText(R.id.city, weather?.city ?: context.getString(R.string.tap_to_configure)); setTextViewText(R.id.range, weather?.let { "${it.minimum}° / ${it.maximum}°" } ?: context.getString(R.string.weather_offline))
-            setOnClickPendingIntent(R.id.widget_root, PendingIntent.getActivity(context, appWidgetId, Intent(context, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
-            val refreshIntent = Intent(context, FlipClockWidgetProvider::class.java).apply { action = FlipClockWidgetProvider.ACTION_REFRESH; putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId) }
+            val openIntent = Intent(context, MainActivity::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            setOnClickPendingIntent(R.id.widget_root, PendingIntent.getActivity(context, appWidgetId, openIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+            val refreshIntent = Intent(context, WidgetRefreshReceiver::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             setOnClickPendingIntent(R.id.weather_panel, PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
         }
     }

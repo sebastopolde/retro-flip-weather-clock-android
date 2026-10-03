@@ -43,8 +43,11 @@ $SdkManager = Join-Path $SdkRoot 'cmdline-tools\latest\bin\sdkmanager.bat'
 
 $GradleZip = Join-Path $ToolingRoot 'gradle-8.11.1-bin.zip'
 $GradleHome = Join-Path $ToolingRoot 'gradle-8.11.1'
+$GradleSha256 = 'f397b287023acdba1e9f6fc5ea72d22dd63669d59ed4a289a29b1a76eee151c6'
 if (-not (Test-Path -LiteralPath (Join-Path $GradleHome 'bin\gradle.bat'))) {
     Invoke-WebRequest -Uri 'https://services.gradle.org/distributions/gradle-8.11.1-bin.zip' -OutFile $GradleZip
+    $actual = (Get-FileHash -LiteralPath $GradleZip -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne $GradleSha256) { throw "Empreinte Gradle invalide: $actual" }
     Expand-Archive -LiteralPath $GradleZip -DestinationPath $ToolingRoot -Force
 }
 $GradleBat = Join-Path $GradleHome 'bin\gradle.bat'
