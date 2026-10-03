@@ -1,4 +1,5 @@
 40179c84772d7c0085f7574682a979428350a0adac51b2e85a39a828fe2d70f0  com.htc.widget.weatherclock_10.10.1059527-663091214_minAPI24(640dpi)_apkmirror.com.apk
+fecb59b7855f9088d9585c1b46b1cf1c5b6eb33fe2f4cfb3ad0495785627e264  com.htc.widget.weatherclock_8.50.829652-660051364.apk
 
 # Certificat de signature HTC (SHA-256)
 # a6ce16fbe0b5b1468b48f8fba9f0a608728c424509e2cb9310ea696b5fc4b2be

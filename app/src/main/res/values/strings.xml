@@ -12,5 +12,5 @@
     <string name="offline_cache">Réseau indisponible : dernière météo conservée.</string>
     <string name="confirm_on_launcher">Confirmez l’ajout sur l’écran d’accueil.</string>
     <string name="manual_widget_help">Ajoutez « Horloge météo rabattable » depuis le sélecteur de widgets.</string>
-    <string name="intro">Aperçu fonctionnel — l’horloge continue sans réseau. Touchez le panneau météo du widget pour l’actualiser.</string>
+    <string name="intro">Clone moderne du widget HTC 4×2 — l’horloge continue sans réseau. Touchez le bandeau météo pour l’actualiser.</string>
 </resources>

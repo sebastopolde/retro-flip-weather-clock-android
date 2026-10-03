@@ -15,6 +15,7 @@ $classpath = @(
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
+    fr.papycha.htcweatherclock.weather.HtcWeatherPresentationTest `
     fr.papycha.htcweatherclock.storage.WeatherStorageCodecTest `
     fr.papycha.htcweatherclock.work.RefreshDecisionTest
 if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }

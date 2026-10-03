@@ -6,9 +6,12 @@ import android.content.ComponentName
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import fr.papycha.htcweatherclock.storage.WidgetPreferences
 import fr.papycha.htcweatherclock.weather.OpenMeteoClient
+import fr.papycha.htcweatherclock.weather.HtcWeatherPresentation
+import fr.papycha.htcweatherclock.weather.HtcWeatherDrawable
 import fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider
 import fr.papycha.htcweatherclock.widget.WidgetRenderer
 import fr.papycha.htcweatherclock.work.RefreshScheduler
@@ -35,6 +38,14 @@ open class MainActivity : Activity() {
             }
         }
     }
-    protected fun renderPreview() { val w = WidgetPreferences.weather(this, activeWidgetId); findViewById<TextView>(R.id.weather_symbol).text = w?.symbol ?: "☁"; findViewById<TextView>(R.id.temperature).text = w?.let { "${it.temperature}°" } ?: "--°"; findViewById<TextView>(R.id.city).text = w?.city ?: WidgetPreferences.city(this, activeWidgetId); findViewById<TextView>(R.id.range).text = w?.let { "${it.minimum}° / ${it.maximum}°" } ?: getString(R.string.weather_offline) }
+    protected fun renderPreview() {
+        val weather = WidgetPreferences.weather(this, activeWidgetId)
+        val visual = weather?.let { HtcWeatherPresentation.forWmo(it.weatherCode) }
+        findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
+        findViewById<TextView>(R.id.temperature).text = weather?.let { "${it.temperature}°" } ?: "--°"
+        findViewById<TextView>(R.id.city).text = weather?.city ?: WidgetPreferences.city(this, activeWidgetId)
+        findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
+        findViewById<TextView>(R.id.range).text = weather?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°"
+    }
     private fun requestPinWidget(status: TextView) { val manager = AppWidgetManager.getInstance(this); if (android.os.Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) { manager.requestPinAppWidget(ComponentName(this, FlipClockWidgetProvider::class.java), null, null); status.text = getString(R.string.confirm_on_launcher) } else status.text = getString(R.string.manual_widget_help) }
 }
