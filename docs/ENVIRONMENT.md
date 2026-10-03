@@ -4,7 +4,8 @@ L’environnement est autonome dans `.tooling/` et n’est pas versionné.
 
 ## Versions vérifiées
 
-- JDK: Eclipse Temurin 17.0.20.1+1
+- JDK de compilation: Eclipse Temurin 17.0.16+8
+- Gradle: 8.11.1, local au projet
 - Android command-line tools: 15859902
 - Android Debug Bridge: 1.0.41 / 37.0.1-15733141
 - Android Emulator: 37.2.12.0
@@ -19,6 +20,7 @@ L’environnement est autonome dans `.tooling/` et n’est pas versionné.
 ```powershell
 .\tools\bootstrap.ps1
 .\tools\start-emulator.ps1
+.\tools\install-emulator.ps1
 ```
 
 Pour un démarrage automatisé sans fenêtre :
@@ -34,4 +36,4 @@ Pour charger les outils dans le terminal courant :
 adb devices
 ```
 
-Le SDK, le JDK, l’émulateur et ses disques virtuels restent confinés dans le projet. Le premier montage demande environ 6 Go, davantage après création des instantanés de l’émulateur.
+Le SDK, le JDK, Gradle, l’émulateur et ses disques virtuels restent confinés dans le projet. Le premier montage demande environ 6 Go, davantage après création des instantanés de l’émulateur. La révision JDK 17.0.16 est volontaire : elle évite un défaut de canal local observé avec 17.0.20.1 sous cette version de Windows.

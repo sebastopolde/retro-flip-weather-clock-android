@@ -7,4 +7,5 @@ analysis/generated/
 reference/original/*.apk
 *.jks
 *.keystore
-
+artifacts/
+dist/*.apk

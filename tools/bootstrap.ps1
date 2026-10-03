@@ -6,19 +6,18 @@ $SdkRoot = Join-Path $ToolingRoot 'android-sdk'
 $CommandLineArchive = Join-Path $ToolingRoot 'commandlinetools-win-15859902_latest.zip'
 $CommandLineUrl = 'https://dl.google.com/android/repository/commandlinetools-win-15859902_latest.zip'
 $CommandLineSha256 = '90ae805d20434428bffcb699c290860f19bb5f66a67e6b330067e3de801fb04a'
-$JdkArchiveName = 'OpenJDK17U-jdk_x64_windows_hotspot_17.0.20.1_1.zip'
-$JdkBaseUrl = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1'
+$JdkArchiveName = 'OpenJDK17U-17.0.16.zip'
+$JdkUrl = 'https://api.adoptium.net/v3/binary/version/jdk-17.0.16%2B8/windows/x64/jdk/hotspot/normal/eclipse'
+$JdkSha256 = '8c7cfff78a55c56ebaf470ed6a89c6466b47d8274bdabdda997d7507c20325c5'
 $JdkArchive = Join-Path $ToolingRoot $JdkArchiveName
 
 New-Item -ItemType Directory -Path $ToolingRoot -Force | Out-Null
 
-if (-not (Test-Path -LiteralPath (Join-Path $ToolingRoot 'jdk17'))) {
-    Invoke-WebRequest -Uri "$JdkBaseUrl/$JdkArchiveName" -OutFile $JdkArchive
-    Invoke-WebRequest -Uri "$JdkBaseUrl/$JdkArchiveName.sha256.txt" -OutFile "$JdkArchive.sha256.txt"
-    $expected = ((Get-Content -LiteralPath "$JdkArchive.sha256.txt" -Raw).Trim() -split '\s+')[0]
-    $actual = (Get-FileHash -LiteralPath $JdkArchive -Algorithm SHA256).Hash
-    if ($actual -ne $expected) { throw "Empreinte JDK invalide: $actual" }
-    Expand-Archive -LiteralPath $JdkArchive -DestinationPath (Join-Path $ToolingRoot 'jdk17') -Force
+if (-not (Test-Path -LiteralPath (Join-Path $ToolingRoot 'jdk17stable'))) {
+    Invoke-WebRequest -Uri $JdkUrl -OutFile $JdkArchive
+    $actual = (Get-FileHash -LiteralPath $JdkArchive -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne $JdkSha256) { throw "Empreinte JDK invalide: $actual" }
+    Expand-Archive -LiteralPath $JdkArchive -DestinationPath (Join-Path $ToolingRoot 'jdk17stable') -Force
 }
 
 if (-not (Test-Path -LiteralPath (Join-Path $SdkRoot 'cmdline-tools\latest\bin\sdkmanager.bat'))) {
@@ -42,5 +41,15 @@ $SdkManager = Join-Path $SdkRoot 'cmdline-tools\latest\bin\sdkmanager.bat'
     'build-tools;36.0.0' `
     'system-images;android-36;google_apis;x86_64'
 
-& (Join-Path $PSScriptRoot 'create-avd.ps1')
+$GradleZip = Join-Path $ToolingRoot 'gradle-8.11.1-bin.zip'
+$GradleHome = Join-Path $ToolingRoot 'gradle-8.11.1'
+if (-not (Test-Path -LiteralPath (Join-Path $GradleHome 'bin\gradle.bat'))) {
+    Invoke-WebRequest -Uri 'https://services.gradle.org/distributions/gradle-8.11.1-bin.zip' -OutFile $GradleZip
+    Expand-Archive -LiteralPath $GradleZip -DestinationPath $ToolingRoot -Force
+}
+$GradleBat = Join-Path $GradleHome 'bin\gradle.bat'
+$GradleScript = Get-Content -LiteralPath $GradleBat -Raw
+$GradleScript = $GradleScript.Replace('set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"', 'set DEFAULT_JVM_OPTS="-Xmx512m" "-Xms256m" "-XX:MaxMetaspaceSize=384m" "-XX:+HeapDumpOnOutOfMemoryError"')
+Set-Content -LiteralPath $GradleBat -Value $GradleScript -Encoding Ascii
 
+& (Join-Path $PSScriptRoot 'create-avd.ps1')

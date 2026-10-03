@@ -2,7 +2,9 @@ $ErrorActionPreference = 'Stop'
 
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $ToolingRoot = Join-Path $ProjectRoot '.tooling'
-$JdkRoot = Get-ChildItem -LiteralPath (Join-Path $ToolingRoot 'jdk17') -Directory |
+$StableJdk = Join-Path $ToolingRoot 'jdk17stable'
+$JdkSearchRoot = if (Test-Path -LiteralPath $StableJdk) { $StableJdk } else { Join-Path $ToolingRoot 'jdk17' }
+$JdkRoot = Get-ChildItem -LiteralPath $JdkSearchRoot -Directory |
     Select-Object -First 1 -ExpandProperty FullName
 $SdkRoot = Join-Path $ToolingRoot 'android-sdk'
 $AvdRoot = Join-Path $ToolingRoot 'avd'
@@ -25,4 +27,3 @@ $env:Path = @(
     (Join-Path $SdkRoot 'cmdline-tools\latest\bin')
     $env:Path
 ) -join [IO.Path]::PathSeparator
-
