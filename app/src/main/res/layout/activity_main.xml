@@ -7,6 +7,7 @@
         <EditText android:id="@+id/city_input" android:layout_width="match_parent" android:layout_height="56dp" android:hint="@string/city_hint" android:textColor="#FFFFFF" android:textColorHint="#9EADB3" android:singleLine="true" android:backgroundTint="@color/htc_green" android:layout_marginTop="22dp"/>
         <Button android:id="@+id/refresh_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/refresh" android:layout_marginTop="10dp"/>
         <Button android:id="@+id/add_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/add_widget" android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/add_weekly_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/add_weekly_widget" android:layout_marginTop="8dp"/>
         <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#D5DFE2" android:textSize="14sp" android:gravity="center" android:padding="12dp"/>
     </LinearLayout>
 </ScrollView>

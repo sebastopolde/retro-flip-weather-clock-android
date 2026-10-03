@@ -9,12 +9,19 @@
         <activity android:name=".settings.WidgetConfigurationActivity" android:exported="true">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/></intent-filter>
         </activity>
-        <receiver android:name=".widget.FlipClockWidgetProvider" android:exported="true">
+        <receiver android:name=".widget.FlipClockWidgetProvider" android:exported="true" android:label="@string/widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/flip_clock_widget_info"/>
+        </receiver>
+        <receiver android:name=".widget.WeeklyWeatherWidgetProvider" android:exported="true" android:label="@string/weekly_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/weekly_weather_widget_info"/>
         </receiver>
         <receiver android:name=".widget.WidgetRefreshReceiver" android:exported="false"/>
     </application>

@@ -8,11 +8,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.view.View
 import fr.papycha.htcweatherclock.storage.WidgetPreferences
 import fr.papycha.htcweatherclock.weather.OpenMeteoClient
 import fr.papycha.htcweatherclock.weather.HtcWeatherPresentation
 import fr.papycha.htcweatherclock.weather.HtcWeatherDrawable
 import fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider
+import fr.papycha.htcweatherclock.widget.WeeklyWeatherWidgetProvider
 import fr.papycha.htcweatherclock.widget.WidgetRenderer
 import fr.papycha.htcweatherclock.work.RefreshScheduler
 
@@ -37,6 +39,10 @@ open class MainActivity : Activity() {
                 }
             }
         }
+        findViewById<Button>(R.id.add_weekly_widget_button).apply {
+            visibility = if (activeWidgetId == 0) View.VISIBLE else View.GONE
+            setOnClickListener { requestPinWidget(status, WeeklyWeatherWidgetProvider::class.java) }
+        }
     }
     protected fun renderPreview() {
         val weather = WidgetPreferences.weather(this, activeWidgetId)
@@ -47,5 +53,5 @@ open class MainActivity : Activity() {
         findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
         findViewById<TextView>(R.id.range).text = weather?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°"
     }
-    private fun requestPinWidget(status: TextView) { val manager = AppWidgetManager.getInstance(this); if (android.os.Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) { manager.requestPinAppWidget(ComponentName(this, FlipClockWidgetProvider::class.java), null, null); status.text = getString(R.string.confirm_on_launcher) } else status.text = getString(R.string.manual_widget_help) }
+    private fun requestPinWidget(status: TextView, provider: Class<*> = FlipClockWidgetProvider::class.java) { val manager = AppWidgetManager.getInstance(this); if (android.os.Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) { manager.requestPinAppWidget(ComponentName(this, provider), null, null); status.text = getString(R.string.confirm_on_launcher) } else status.text = getString(R.string.manual_widget_help) }
 }

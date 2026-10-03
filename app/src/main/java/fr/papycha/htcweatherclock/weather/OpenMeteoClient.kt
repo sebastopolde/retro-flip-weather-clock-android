@@ -16,7 +16,7 @@ object OpenMeteoClient {
         val longitude = Regex("\\\"longitude\\\"\\s*:\\s*(-?\\d+(?:\\.\\d+)?)").find(geo)?.groupValues?.get(1)
         val name = Regex("\\\"name\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"").find(geo)?.groupValues?.get(1) ?: wanted
         if (latitude == null || longitude == null) WeatherResult(previous, false) else {
-            val json = get("https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1")
+            val json = get("https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7")
             WeatherRepository.resolve(json, previous, System.currentTimeMillis(), name)
         }
     } catch (_: java.io.IOException) { WeatherResult(previous, fresh = false, retryable = true) }

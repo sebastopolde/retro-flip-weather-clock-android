@@ -15,6 +15,8 @@ import fr.papycha.htcweatherclock.weather.HtcWeatherDrawable
 object WidgetRenderer {
     fun render(context: Context, appWidgetId: Int): RemoteViews {
         val manager = AppWidgetManager.getInstance(context)
+        val providerName = manager.getAppWidgetInfo(appWidgetId)?.provider?.className
+        if (WidgetKindSelector.fromProvider(providerName) == WidgetKind.WEEKLY) return WeeklyWidgetRenderer.render(context, appWidgetId)
         val width = manager.getAppWidgetOptions(appWidgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250)
         val layout = when (WidgetLayoutSelector.select(width, Build.VERSION.SDK_INT)) { WidgetLayout.COMPACT -> R.layout.widget_compact; WidgetLayout.CLASSIC -> R.layout.widget_classic; WidgetLayout.WIDE -> R.layout.widget_wide }
         val weather = WidgetPreferences.weather(context, appWidgetId)

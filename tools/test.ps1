@@ -13,9 +13,12 @@ $classpath = @(
 ) -join [IO.Path]::PathSeparator
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
+    fr.papycha.htcweatherclock.widget.WidgetKindSelectorTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
     fr.papycha.htcweatherclock.weather.HtcWeatherPresentationTest `
+    fr.papycha.htcweatherclock.weather.ForecastDayFormatterTest `
     fr.papycha.htcweatherclock.storage.WeatherStorageCodecTest `
+    fr.papycha.htcweatherclock.storage.ForecastStorageCodecTest `
     fr.papycha.htcweatherclock.work.RefreshDecisionTest
 if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }

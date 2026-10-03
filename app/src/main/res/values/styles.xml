@@ -16,6 +16,21 @@
         <item name="android:textColor">#FFB8B8B8</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+    <style name="HtcForecastDay">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+    <style name="HtcForecastTemperature">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">#FFD0D0D0</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
     <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item><item name="android:colorAccent">#A8C93E</item><item name="android:navigationBarColor">#0B1013</item><item name="android:statusBarColor">#0B1013</item><item name="android:windowLightStatusBar">false</item>
     </style>

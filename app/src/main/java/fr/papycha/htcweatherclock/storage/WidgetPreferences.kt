@@ -11,9 +11,9 @@ object WidgetPreferences {
         return WeatherStorageCodec.decode(prefs(context).all, widgetId)
     }
     fun setWeather(context: Context, s: WeatherSnapshot, widgetId: Int = 0) {
-        val p = "weather_$widgetId"; prefs(context).edit().putString("${p}_city", s.city).putInt("${p}_temp", s.temperature).putInt("${p}_min", s.minimum).putInt("${p}_max", s.maximum).putInt("${p}_code", s.weatherCode).putLong("${p}_time", s.updatedAt).apply()
+        val p = "weather_$widgetId"; prefs(context).edit().putString("${p}_city", s.city).putInt("${p}_temp", s.temperature).putInt("${p}_min", s.minimum).putInt("${p}_max", s.maximum).putInt("${p}_code", s.weatherCode).putLong("${p}_time", s.updatedAt).putString("${p}_forecast", ForecastStorageCodec.encode(s.forecast)).apply()
     }
     fun delete(context: Context, widgetId: Int) {
-        val e = prefs(context).edit(); listOf("city_$widgetId", "weather_${widgetId}_city", "weather_${widgetId}_temp", "weather_${widgetId}_min", "weather_${widgetId}_max", "weather_${widgetId}_code", "weather_${widgetId}_time").forEach(e::remove); e.apply()
+        val e = prefs(context).edit(); listOf("city_$widgetId", "weather_${widgetId}_city", "weather_${widgetId}_temp", "weather_${widgetId}_min", "weather_${widgetId}_max", "weather_${widgetId}_code", "weather_${widgetId}_time", "weather_${widgetId}_forecast").forEach(e::remove); e.apply()
     }
 }

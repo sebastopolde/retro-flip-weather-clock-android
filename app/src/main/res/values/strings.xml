@@ -1,16 +1,18 @@
 <resources>
     <string name="app_name">Horloge météo HTC moderne</string>
     <string name="widget_name">Horloge météo rabattable</string>
+    <string name="weekly_widget_name">Horloge HTC + météo semaine</string>
     <string name="tap_to_configure">Touchez pour configurer</string>
     <string name="weather_offline">Météo hors ligne</string>
     <string name="city_hint">Ville (ex. Paris)</string>
     <string name="refresh">Actualiser la météo</string>
     <string name="add_widget">Ajouter le widget à l’accueil</string>
+    <string name="add_weekly_widget">Ajouter le widget météo 7 jours</string>
     <string name="save_widget">Enregistrer le widget</string>
     <string name="loading">Connexion à Open‑Meteo…</string>
     <string name="updated">Météo actualisée.</string>
     <string name="offline_cache">Réseau indisponible : dernière météo conservée.</string>
     <string name="confirm_on_launcher">Confirmez l’ajout sur l’écran d’accueil.</string>
-    <string name="manual_widget_help">Ajoutez « Horloge météo rabattable » depuis le sélecteur de widgets.</string>
-    <string name="intro">Clone moderne du widget HTC 4×2 — l’horloge continue sans réseau. Touchez le bandeau météo pour l’actualiser.</string>
+    <string name="manual_widget_help">Ajoutez l’un des widgets HTC depuis le sélecteur de widgets.</string>
+    <string name="intro">Deux widgets HTC sont disponibles : l’horloge classique 4×2 et la version avec météo sur 7 jours. L’horloge continue sans réseau.</string>
 </resources>

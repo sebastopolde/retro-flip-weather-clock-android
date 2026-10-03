@@ -9,6 +9,6 @@ Port moderne du widget HTC classique pour Android 6 à Android 16. Le rendu rée
 .\tools\install-emulator.ps1
 ```
 
-L’application fournit un aperçu fidèle, le choix d’une ville, la météo Open‑Meteo avec cache hors ligne et un bouton d’ajout du vrai widget HTC 4×2 au lanceur. Les variantes compactes et larges conservent la même identité visuelle.
+L’application fournit un aperçu fidèle, le choix d’une ville et la météo Open‑Meteo avec cache hors ligne. Deux widgets peuvent être ajoutés directement au lanceur : le HTC classique 4×2 et une version 4×4 qui conserve l’horloge rabattable tout en affichant les prévisions sur 7 jours. Les variantes compactes et larges conservent la même identité visuelle.
 
 Voir `docs\TESTING.md` pour les vérifications et `docs\ENVIRONMENT.md` pour reconstruire tout l’environnement.

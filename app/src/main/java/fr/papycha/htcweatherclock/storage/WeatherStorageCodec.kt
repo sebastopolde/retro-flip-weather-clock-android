@@ -12,7 +12,8 @@ object WeatherStorageCodec {
             values["${prefix}_min"] as? Int ?: return null,
             values["${prefix}_max"] as? Int ?: return null,
             values["${prefix}_code"] as? Int ?: return null,
-            values["${prefix}_time"] as? Long ?: return null
+            values["${prefix}_time"] as? Long ?: return null,
+            ForecastStorageCodec.decode(values["${prefix}_forecast"] as? String)
         )
     }
 }
