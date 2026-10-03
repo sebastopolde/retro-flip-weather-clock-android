@@ -1,0 +1,10 @@
+.tooling/
+.gradle/
+.idea/
+local.properties
+**/build/
+analysis/generated/
+reference/original/*.apk
+*.jks
+*.keystore
+
