@@ -11,7 +11,7 @@ L’environnement est autonome dans `.tooling/` et n’est pas versionné.
 - Android SDK Platform: API 36
 - Android SDK Build Tools: 36.0.0
 - Image système: Android 16, Google APIs, x86_64
-- AVD: `HTCClock_API36`, profil Pixel 5
+- AVD: `HTCClock_API36`, profil Pixel 5, série ADB dédiée `emulator-5580`
 - Accélération: WHPX disponible et utilisable
 
 ## Utilisation
