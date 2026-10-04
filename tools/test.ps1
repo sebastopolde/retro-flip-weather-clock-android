@@ -64,10 +64,12 @@ $classpath = @(
 ) -join [IO.Path]::PathSeparator
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
     fr.papycha.htcweatherclock.RequestGateTest `
+    fr.papycha.htcweatherclock.PreviewPageSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetKindSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetActionSpecTest `
     fr.papycha.htcweatherclock.widget.WidgetPinResultTest `
+    fr.papycha.htcweatherclock.widget.WidgetSyncPlanTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
     fr.papycha.htcweatherclock.location.LocationProviderSpecTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
@@ -79,5 +81,6 @@ $classpath = @(
     fr.papycha.htcweatherclock.storage.LocationStorageCodecTest `
     fr.papycha.htcweatherclock.storage.WidgetStateTransferTest `
     fr.papycha.htcweatherclock.storage.ForecastStorageCodecTest `
-    fr.papycha.htcweatherclock.work.RefreshDecisionTest
+    fr.papycha.htcweatherclock.work.RefreshDecisionTest `
+    fr.papycha.htcweatherclock.work.RefreshRevisionTest
 if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }

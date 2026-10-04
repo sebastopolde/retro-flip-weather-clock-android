@@ -29,9 +29,41 @@ object WidgetPreferences {
     fun setWeather(context: Context, s: WeatherSnapshot, widgetId: Int = 0) {
         val p = "weather_$widgetId"; prefs(context).edit().putString("${p}_city", s.city).putInt("${p}_temp", s.temperature).putInt("${p}_min", s.minimum).putInt("${p}_max", s.maximum).putInt("${p}_code", s.weatherCode).putLong("${p}_time", s.updatedAt).putString("${p}_forecast", ForecastStorageCodec.encode(s.forecast)).apply()
     }
+    @Synchronized
+    fun setWeatherIfRevision(context: Context, s: WeatherSnapshot, widgetId: Int, expectedRevision: Long): Boolean {
+        if (expectedRevision != configurationRevision(context, widgetId)) return false
+        setWeather(context, s, widgetId)
+        return true
+    }
+    fun configurationRevision(context: Context, widgetId: Int): Long =
+        prefs(context).getLong("revision_$widgetId", 0L)
+    @Synchronized
+    fun setConfiguration(context: Context, location: ResolvedLocation, s: WeatherSnapshot, widgetId: Int = 0) {
+        val locationPrefix = "location_$widgetId"
+        val weatherPrefix = "weather_$widgetId"
+        val preferences = prefs(context)
+        preferences.edit()
+            .putLong("revision_$widgetId", configurationRevision(context, widgetId) + 1L)
+            .putString("city_$widgetId", location.label)
+            .putString("${locationPrefix}_label", location.label)
+            .putString("${locationPrefix}_latitude", location.latitude.toString())
+            .putString("${locationPrefix}_longitude", location.longitude.toString())
+            .putString("${locationPrefix}_weather_label", location.weatherLabel)
+            .putString("${weatherPrefix}_city", s.city)
+            .putInt("${weatherPrefix}_temp", s.temperature)
+            .putInt("${weatherPrefix}_min", s.minimum)
+            .putInt("${weatherPrefix}_max", s.maximum)
+            .putInt("${weatherPrefix}_code", s.weatherCode)
+            .putLong("${weatherPrefix}_time", s.updatedAt)
+            .putString("${weatherPrefix}_forecast", ForecastStorageCodec.encode(s.forecast))
+            .apply()
+    }
+    @Synchronized
     fun copyGlobalConfiguration(context: Context, targetWidgetId: Int) {
-        val editor = prefs(context).edit()
-        WidgetStateTransfer.fromGlobal(prefs(context).all, targetWidgetId).forEach { (key, value) ->
+        val preferences = prefs(context)
+        val editor = preferences.edit()
+            .putLong("revision_$targetWidgetId", configurationRevision(context, targetWidgetId) + 1L)
+        WidgetStateTransfer.fromGlobal(preferences.all, targetWidgetId).forEach { (key, value) ->
             when (value) {
                 is String -> editor.putString(key, value)
                 is Int -> editor.putInt(key, value)
@@ -43,6 +75,6 @@ object WidgetPreferences {
         editor.apply()
     }
     fun delete(context: Context, widgetId: Int) {
-        val e = prefs(context).edit(); listOf("city_$widgetId", "location_${widgetId}_label", "location_${widgetId}_latitude", "location_${widgetId}_longitude", "location_${widgetId}_weather_label", "weather_${widgetId}_city", "weather_${widgetId}_temp", "weather_${widgetId}_min", "weather_${widgetId}_max", "weather_${widgetId}_code", "weather_${widgetId}_time", "weather_${widgetId}_forecast").forEach(e::remove); e.apply()
+        val e = prefs(context).edit(); listOf("city_$widgetId", "location_${widgetId}_label", "location_${widgetId}_latitude", "location_${widgetId}_longitude", "location_${widgetId}_weather_label", "weather_${widgetId}_city", "weather_${widgetId}_temp", "weather_${widgetId}_min", "weather_${widgetId}_max", "weather_${widgetId}_code", "weather_${widgetId}_time", "weather_${widgetId}_forecast", "revision_$widgetId").forEach(e::remove); e.apply()
     }
 }

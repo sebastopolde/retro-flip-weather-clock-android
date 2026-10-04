@@ -33,12 +33,64 @@
             android:textColor="#FFC6D1D5"
             android:textSize="14sp" />
 
-        <include layout="@layout/widget_classic" android:layout_width="match_parent" android:layout_height="190dp" />
+        <HorizontalScrollView
+            android:id="@+id/preview_pager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:id="@+id/preview_pages"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/classic_preview_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foregroundGravity="center">
+
+                    <include
+                        android:id="@+id/classic_preview"
+                        layout="@layout/widget_classic"
+                        android:layout_width="match_parent"
+                        android:layout_height="190dp"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/weekly_preview_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include
+                        android:id="@+id/weekly_preview"
+                        layout="@layout/widget_weekly"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/preview_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="6dp"
+            android:paddingBottom="8dp"
+            android:text="@string/preview_classic_indicator"
+            android:textColor="#FFC6D1D5"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/dashboard_card"
             android:orientation="vertical"
             android:padding="16dp">

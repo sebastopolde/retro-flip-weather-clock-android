@@ -26,7 +26,7 @@
     <string name="address_not_found">Adresse non reconnue. Ajoutez la commune et le code postal.</string>
     <string name="address_network_error">Impossible de tester l’adresse : vérifiez votre connexion Internet.</string>
     <string name="address_service_error">Le service d’adresses ne répond pas correctement. Réessayez plus tard.</string>
-    <string name="address_recognized">Adresse reconnue : %1$s</string>
+    <string name="address_recognized">Adresse reconnue : %1$s. Appuyez sur Actualiser la météo pour l’appliquer aux widgets.</string>
     <string name="address_saved">Adresse enregistrée : %1$s</string>
     <string name="weather_validation_failed">Adresse reconnue (%1$s), mais la météo est momentanément indisponible.</string>
     <string name="locating">Recherche de votre position…</string>
@@ -46,4 +46,6 @@
     <string name="last_updated_format">Dernière actualisation : %1$s</string>
     <string name="weather_source">Météo : Open‑Meteo · Adresses : OpenStreetMap</string>
     <string name="version_format">Version %1$s</string>
+    <string name="preview_classic_indicator">4×3   ● ○   Glissez ↔</string>
+    <string name="preview_weekly_indicator">4×4   ○ ●   Glissez ↔</string>
 </resources>

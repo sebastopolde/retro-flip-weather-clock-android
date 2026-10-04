@@ -12,10 +12,20 @@ class WeatherRefreshWorker(context: Context, params: WorkerParameters) : Worker(
     override fun doWork(): Result {
         val id = inputData.getInt(KEY_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return Result.failure()
+        val startRevision = WidgetPreferences.configurationRevision(applicationContext, id)
         val previous = WidgetPreferences.weather(applicationContext, id)
         val result = WidgetPreferences.location(applicationContext, id)?.let { OpenMeteoClient.fetch(it, previous) }
             ?: OpenMeteoClient.fetch(WidgetPreferences.city(applicationContext, id), previous)
-        result.snapshot?.let { WidgetPreferences.setWeather(applicationContext, it, id) }
+        val snapshot = result.snapshot
+        if (snapshot != null) {
+            if (!WidgetPreferences.setWeatherIfRevision(applicationContext, snapshot, id, startRevision)) {
+                return Result.success()
+            }
+        } else if (!RefreshRevision.canApply(
+                startRevision,
+                WidgetPreferences.configurationRevision(applicationContext, id)
+            )
+        ) return Result.success()
         AppWidgetManager.getInstance(applicationContext).updateAppWidget(id, WidgetRenderer.render(applicationContext, id))
         return when (RefreshDecision.from(result)) {
             RefreshDecision.COMPLETE -> Result.success()

@@ -7,12 +7,17 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
 import android.widget.Button
 import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
 import fr.papycha.htcweatherclock.location.AndroidLocationLocator
@@ -22,13 +27,16 @@ import fr.papycha.htcweatherclock.weather.HtcWeatherDrawable
 import fr.papycha.htcweatherclock.weather.HtcWeatherPresentation
 import fr.papycha.htcweatherclock.weather.OpenMeteoClient
 import fr.papycha.htcweatherclock.weather.AddressResolution
+import fr.papycha.htcweatherclock.weather.ForecastDayFormatter
 import fr.papycha.htcweatherclock.weather.ResolvedLocation
 import fr.papycha.htcweatherclock.weather.WeatherSnapshot
+import fr.papycha.htcweatherclock.weather.WeeklyWeatherFormatter
 import fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider
 import fr.papycha.htcweatherclock.widget.WeeklyWeatherWidgetProvider
 import fr.papycha.htcweatherclock.widget.WidgetPinResult
 import fr.papycha.htcweatherclock.widget.WidgetRenderer
 import fr.papycha.htcweatherclock.widget.WidgetPinnedReceiver
+import fr.papycha.htcweatherclock.widget.WidgetSyncPlan
 import fr.papycha.htcweatherclock.work.RefreshScheduler
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -41,6 +49,7 @@ open class MainActivity : Activity() {
     private lateinit var testAddressButton: Button
     private lateinit var locationButton: Button
     private lateinit var refreshButton: Button
+    private var neutralTestAddressTint: ColorStateList? = null
     private lateinit var locator: AndroidLocationLocator
     private val requestGate = RequestGate()
     private var pendingLocation: ResolvedLocation? = null
@@ -55,12 +64,19 @@ open class MainActivity : Activity() {
         input = findViewById(R.id.city_input)
         status = findViewById(R.id.status)
         testAddressButton = findViewById(R.id.test_address_button)
+        neutralTestAddressTint = testAddressButton.backgroundTintList
         locationButton = findViewById(R.id.location_button)
         refreshButton = findViewById(R.id.refresh_button)
         locator = AndroidLocationLocator(this)
         pendingLocation = WidgetPreferences.location(this, activeWidgetId)
         pendingInput = pendingLocation?.label
         input.setText(WidgetPreferences.city(this, activeWidgetId))
+        input.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) = setAddressRecognized(false)
+            override fun afterTextChanged(text: Editable?) = Unit
+        })
+        setupPreviewPager()
         renderPreview()
         findViewById<TextView>(R.id.app_version).text = getString(R.string.version_format, BuildConfig.VERSION_NAME)
 
@@ -99,6 +115,7 @@ open class MainActivity : Activity() {
 
     private fun validateAddress(save: Boolean, onComplete: (Boolean) -> Unit = {}) {
         val address = input.text.toString().trim()
+        setAddressRecognized(false)
         if (address.isEmpty()) {
             status.text = getString(R.string.address_required)
             onComplete(false)
@@ -131,10 +148,10 @@ open class MainActivity : Activity() {
                 input.setText(location.label)
                 if (result?.fresh == true && result.snapshot != null) {
                     renderPreview(result.snapshot)
+                    setAddressRecognized(true)
                     if (save) {
-                        WidgetPreferences.setLocation(this, location, activeWidgetId)
-                        WidgetPreferences.setWeather(this, result.snapshot, activeWidgetId)
-                        updateActiveWidget()
+                        WidgetPreferences.setConfiguration(this, location, result.snapshot, activeWidgetId)
+                        updateInstalledWidgets()
                         status.text = getString(R.string.address_saved, location.label)
                     } else {
                         status.text = getString(R.string.address_recognized, location.label)
@@ -186,6 +203,7 @@ open class MainActivity : Activity() {
                     input.setText(location.label)
                     if (result.fresh && result.snapshot != null) {
                         renderPreview(result.snapshot)
+                        setAddressRecognized(true)
                         status.text = getString(R.string.location_recognized, location.label)
                     } else {
                         status.text = getString(R.string.location_weather_unavailable, location.label)
@@ -203,22 +221,119 @@ open class MainActivity : Activity() {
         findViewById<Button>(R.id.add_widget_button).isEnabled = enabled
     }
 
-    private fun updateActiveWidget() {
-        if (activeWidgetId != 0) AppWidgetManager.getInstance(this)
-            .updateAppWidget(activeWidgetId, WidgetRenderer.render(this, activeWidgetId))
+    private fun setAddressRecognized(recognized: Boolean) {
+        if (!::testAddressButton.isInitialized) return
+        testAddressButton.backgroundTintList = if (recognized) {
+            resources.getColorStateList(R.color.htc_green, theme)
+        } else neutralTestAddressTint
+    }
+
+    private fun updateInstalledWidgets() {
+        val manager = AppWidgetManager.getInstance(this)
+        val targets = WidgetSyncPlan.targets(
+            activeWidgetId,
+            manager.getAppWidgetIds(ComponentName(this, FlipClockWidgetProvider::class.java)),
+            manager.getAppWidgetIds(ComponentName(this, WeeklyWeatherWidgetProvider::class.java))
+        )
+        targets.forEach { widgetId ->
+            if (activeWidgetId == 0) WidgetPreferences.copyGlobalConfiguration(this, widgetId)
+            manager.updateAppWidget(widgetId, WidgetRenderer.render(this, widgetId))
+            RefreshScheduler.periodic(this, widgetId)
+        }
     }
 
     protected fun renderPreview(snapshot: WeatherSnapshot? = WidgetPreferences.weather(this, activeWidgetId)) {
         val visual = snapshot?.let { HtcWeatherPresentation.forWmo(it.weatherCode) }
-        findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
-        findViewById<TextView>(R.id.temperature).text = snapshot?.let { "${it.temperature}°" } ?: "--°"
-        findViewById<TextView>(R.id.city).text = snapshot?.city ?: WidgetPreferences.city(this, activeWidgetId)
-        findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
-        findViewById<TextView>(R.id.range).text = snapshot?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°"
+        val city = snapshot?.city ?: WidgetPreferences.city(this, activeWidgetId)
+        val classic = findViewById<View>(R.id.classic_preview)
+        classic.findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
+        classic.findViewById<TextView>(R.id.temperature).text = snapshot?.let { "${it.temperature}°" } ?: "--°"
+        classic.findViewById<TextView>(R.id.city).text = city
+        classic.findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
+        classic.findViewById<TextView>(R.id.range).text = snapshot?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°"
+
+        val weekly = findViewById<View>(R.id.weekly_preview)
+        weekly.findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
+        weekly.findViewById<TextView>(R.id.temperature).text = snapshot?.let { WeeklyWeatherFormatter.currentTemperature(it.temperature) } ?: "--°C"
+        weekly.findViewById<TextView>(R.id.city).text = city
+        weekly.findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
+        weekly.findViewById<TextView>(R.id.range).text = snapshot?.let { WeeklyWeatherFormatter.currentRange(it.minimum, it.maximum) } ?: "--° / --°"
+        weekly.findViewById<TextView>(R.id.widget_date).text = WeeklyWeatherFormatter.date(System.currentTimeMillis())
+        renderWeeklyForecast(weekly, snapshot)
         findViewById<TextView>(R.id.last_updated).text = snapshot?.let {
             val formatted = SimpleDateFormat("d MMM yyyy 'à' HH:mm", Locale.FRENCH).format(Date(it.updatedAt))
             getString(R.string.last_updated_format, formatted)
         } ?: getString(R.string.no_weather_update)
+    }
+
+    private fun renderWeeklyForecast(root: View, snapshot: WeatherSnapshot?) {
+        val columns = intArrayOf(R.id.day_1, R.id.day_2, R.id.day_3, R.id.day_4)
+        val labels = intArrayOf(R.id.day_1_label, R.id.day_2_label, R.id.day_3_label, R.id.day_4_label)
+        val icons = intArrayOf(R.id.day_1_icon, R.id.day_2_icon, R.id.day_3_icon, R.id.day_4_icon)
+        val temperatures = intArrayOf(R.id.day_1_temperature, R.id.day_2_temperature, R.id.day_3_temperature, R.id.day_4_temperature)
+        val forecast = WeeklyWeatherFormatter.visibleForecast(snapshot?.forecast.orEmpty())
+        columns.indices.forEach { index ->
+            val day = forecast.getOrNull(index)
+            root.findViewById<View>(columns[index]).visibility = if (day == null) View.INVISIBLE else View.VISIBLE
+            if (day != null) {
+                root.findViewById<TextView>(labels[index]).text = ForecastDayFormatter.label(day.date, Locale.FRENCH)
+                root.findViewById<ImageView>(icons[index]).setImageResource(
+                    HtcWeatherDrawable.forCode(HtcWeatherPresentation.forWmo(day.weatherCode).iconCode)
+                )
+                root.findViewById<TextView>(temperatures[index]).text =
+                    WeeklyWeatherFormatter.forecastRange(day.minimum, day.maximum)
+            }
+        }
+    }
+
+    private fun setupPreviewPager() {
+        val pager = findViewById<HorizontalScrollView>(R.id.preview_pager)
+        val classicPage = findViewById<View>(R.id.classic_preview_page)
+        val weeklyPage = findViewById<View>(R.id.weekly_preview_page)
+        var touchStartX = 0f
+        var touchStartPage = 0
+        val swipeThresholdPx = 72f * resources.displayMetrics.density
+        pager.addOnLayoutChangeListener { _, left, _, right, _, _, _, _, _ ->
+            val pageWidth = right - left
+            if (pageWidth <= 0) return@addOnLayoutChangeListener
+            classicPage.layoutParams = classicPage.layoutParams.apply { width = pageWidth }
+            weeklyPage.layoutParams = weeklyPage.layoutParams.apply { width = pageWidth }
+        }
+        pager.setOnScrollChangeListener { _, scrollX, _, _, _ ->
+            val page = if (pager.width > 0 && scrollX >= pager.width / 2) 1 else 0
+            updatePreviewIndicator(page)
+        }
+        pager.setOnTouchListener { _, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    touchStartX = event.x
+                    touchStartPage = if (pager.width > 0 && pager.scrollX >= pager.width / 2) 1 else 0
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    val page = PreviewPageSelector.afterSwipe(touchStartPage, event.x - touchStartX, swipeThresholdPx)
+                    pager.postDelayed({ pager.smoothScrollTo(page * pager.width, 0) }, 80L)
+                    updatePreviewIndicator(page)
+                }
+            }
+            false
+        }
+        findViewById<TextView>(R.id.preview_indicator).setOnClickListener {
+            val next = if (pager.width > 0 && pager.scrollX < pager.width / 2) 1 else 0
+            pager.smoothScrollTo(next * pager.width, 0)
+            updatePreviewIndicator(next)
+        }
+        updatePreviewIndicator(0)
+    }
+
+    private fun updatePreviewIndicator(page: Int) {
+        findViewById<TextView>(R.id.preview_indicator).setText(
+            if (page == 0) R.string.preview_classic_indicator else R.string.preview_weekly_indicator
+        )
+        val pager = findViewById<HorizontalScrollView>(R.id.preview_pager)
+        val desiredHeight = ((if (page == 0) 200 else 310) * resources.displayMetrics.density).toInt()
+        if (pager.layoutParams.height != desiredHeight) {
+            pager.layoutParams = pager.layoutParams.apply { height = desiredHeight }
+        }
     }
 
     private fun requestPinWidget(status: TextView, provider: Class<*> = FlipClockWidgetProvider::class.java) {
