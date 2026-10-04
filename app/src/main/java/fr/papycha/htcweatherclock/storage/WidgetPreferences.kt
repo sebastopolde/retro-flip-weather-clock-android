@@ -29,6 +29,19 @@ object WidgetPreferences {
     fun setWeather(context: Context, s: WeatherSnapshot, widgetId: Int = 0) {
         val p = "weather_$widgetId"; prefs(context).edit().putString("${p}_city", s.city).putInt("${p}_temp", s.temperature).putInt("${p}_min", s.minimum).putInt("${p}_max", s.maximum).putInt("${p}_code", s.weatherCode).putLong("${p}_time", s.updatedAt).putString("${p}_forecast", ForecastStorageCodec.encode(s.forecast)).apply()
     }
+    fun copyGlobalConfiguration(context: Context, targetWidgetId: Int) {
+        val editor = prefs(context).edit()
+        WidgetStateTransfer.fromGlobal(prefs(context).all, targetWidgetId).forEach { (key, value) ->
+            when (value) {
+                is String -> editor.putString(key, value)
+                is Int -> editor.putInt(key, value)
+                is Long -> editor.putLong(key, value)
+                is Float -> editor.putFloat(key, value)
+                is Boolean -> editor.putBoolean(key, value)
+            }
+        }
+        editor.apply()
+    }
     fun delete(context: Context, widgetId: Int) {
         val e = prefs(context).edit(); listOf("city_$widgetId", "location_${widgetId}_label", "location_${widgetId}_latitude", "location_${widgetId}_longitude", "location_${widgetId}_weather_label", "weather_${widgetId}_city", "weather_${widgetId}_temp", "weather_${widgetId}_min", "weather_${widgetId}_max", "weather_${widgetId}_code", "weather_${widgetId}_time", "weather_${widgetId}_forecast").forEach(e::remove); e.apply()
     }

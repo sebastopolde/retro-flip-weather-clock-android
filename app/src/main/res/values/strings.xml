@@ -15,6 +15,7 @@
     <string name="updated">Météo actualisée.</string>
     <string name="offline_cache">Réseau indisponible : dernière météo conservée.</string>
     <string name="confirm_on_launcher">Confirmez l’ajout sur l’écran d’accueil.</string>
+    <string name="widget_added">Widget ajouté à l’écran d’accueil.</string>
     <string name="manual_widget_help">Ajoutez l’un des widgets HTC depuis le sélecteur de widgets.</string>
     <string name="intro">Gérez la météo, les alarmes et les deux formats de widget HTC depuis un seul écran.</string>
     <string name="dashboard_title">Horloge météo HTC</string>

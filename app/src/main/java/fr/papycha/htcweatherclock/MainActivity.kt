@@ -2,8 +2,10 @@ package fr.papycha.htcweatherclock
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +26,9 @@ import fr.papycha.htcweatherclock.weather.ResolvedLocation
 import fr.papycha.htcweatherclock.weather.WeatherSnapshot
 import fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider
 import fr.papycha.htcweatherclock.widget.WeeklyWeatherWidgetProvider
+import fr.papycha.htcweatherclock.widget.WidgetPinResult
 import fr.papycha.htcweatherclock.widget.WidgetRenderer
+import fr.papycha.htcweatherclock.widget.WidgetPinnedReceiver
 import fr.papycha.htcweatherclock.work.RefreshScheduler
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -67,7 +71,8 @@ open class MainActivity : Activity() {
         findViewById<Button>(R.id.add_widget_button).apply {
             if (activeWidgetId != 0) text = getString(R.string.save_widget)
             setOnClickListener {
-                if (activeWidgetId == 0) requestPinWidget(status) else saveCurrentLocation { saved ->
+                if (activeWidgetId == 0) requestPinWithSavedConfiguration(status)
+                else saveCurrentLocation { saved ->
                     if (saved) {
                         AppWidgetManager.getInstance(this@MainActivity)
                             .updateAppWidget(activeWidgetId, WidgetRenderer.render(this@MainActivity, activeWidgetId))
@@ -78,7 +83,9 @@ open class MainActivity : Activity() {
         }
         findViewById<Button>(R.id.add_weekly_widget_button).apply {
             visibility = if (activeWidgetId == 0) View.VISIBLE else View.GONE
-            setOnClickListener { requestPinWidget(status, WeeklyWeatherWidgetProvider::class.java) }
+            setOnClickListener {
+                requestPinWithSavedConfiguration(status, WeeklyWeatherWidgetProvider::class.java)
+            }
         }
         findViewById<Button>(R.id.weather_details_button).setOnClickListener {
             ExternalActionLauncher.showWeather(this, input.text.toString())
@@ -217,9 +224,32 @@ open class MainActivity : Activity() {
     private fun requestPinWidget(status: TextView, provider: Class<*> = FlipClockWidgetProvider::class.java) {
         val manager = AppWidgetManager.getInstance(this)
         if (Build.VERSION.SDK_INT >= 26 && manager.isRequestPinAppWidgetSupported) {
-            manager.requestPinAppWidget(ComponentName(this, provider), null, null)
-            status.text = getString(R.string.confirm_on_launcher)
+            val callback = PendingIntent.getBroadcast(
+                this,
+                provider.name.hashCode(),
+                Intent(this, WidgetPinnedReceiver::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val requested = manager.requestPinAppWidget(ComponentName(this, provider), null, callback)
+            status.text = getString(if (requested) R.string.confirm_on_launcher else R.string.manual_widget_help)
         } else status.text = getString(R.string.manual_widget_help)
+    }
+
+    private fun requestPinWithSavedConfiguration(
+        status: TextView,
+        provider: Class<*> = FlipClockWidgetProvider::class.java
+    ) {
+        val savedLocation = WidgetPreferences.location(this)
+        val canReuseSaved = WidgetPinResult.canUseSavedConfiguration(
+            input.text.toString(),
+            savedLocation?.label,
+            WidgetPreferences.city(this),
+            WidgetPreferences.weather(this) != null
+        )
+        if (canReuseSaved) requestPinWidget(status, provider)
+        else saveCurrentLocation { saved ->
+            if (saved) requestPinWidget(status, provider)
+        }
     }
 
     override fun onDestroy() {

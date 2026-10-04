@@ -10,6 +10,7 @@
             <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
         </activity>
         <activity android:name=".widget.WidgetActionActivity" android:exported="false" android:theme="@android:style/Theme.NoDisplay"/>
+        <receiver android:name=".widget.WidgetPinnedReceiver" android:exported="false"/>
         <activity android:name=".settings.WidgetConfigurationActivity" android:exported="true">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/></intent-filter>
         </activity>

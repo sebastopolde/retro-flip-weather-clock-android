@@ -67,6 +67,7 @@ $classpath = @(
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetKindSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetActionSpecTest `
+    fr.papycha.htcweatherclock.widget.WidgetPinResultTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
     fr.papycha.htcweatherclock.location.LocationProviderSpecTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
@@ -76,6 +77,7 @@ $classpath = @(
     fr.papycha.htcweatherclock.weather.WeeklyWeatherFormatterTest `
     fr.papycha.htcweatherclock.storage.WeatherStorageCodecTest `
     fr.papycha.htcweatherclock.storage.LocationStorageCodecTest `
+    fr.papycha.htcweatherclock.storage.WidgetStateTransferTest `
     fr.papycha.htcweatherclock.storage.ForecastStorageCodecTest `
     fr.papycha.htcweatherclock.work.RefreshDecisionTest
 if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }
