@@ -1,13 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/screen_bg" android:fillViewport="true">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Horloge météo rabattable" android:textColor="#FFFFFF" android:textSize="25sp" android:textStyle="bold" android:layout_marginTop="16dp"/>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/intro" android:textColor="#C6D1D5" android:textSize="15sp" android:layout_marginTop="8dp" android:layout_marginBottom="18dp"/>
-        <include layout="@layout/widget_classic" android:layout_width="match_parent" android:layout_height="190dp"/>
-        <EditText android:id="@+id/city_input" android:layout_width="match_parent" android:layout_height="56dp" android:hint="@string/city_hint" android:textColor="#FFFFFF" android:textColorHint="#9EADB3" android:singleLine="true" android:backgroundTint="@color/htc_green" android:layout_marginTop="22dp"/>
-        <Button android:id="@+id/refresh_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/refresh" android:layout_marginTop="10dp"/>
-        <Button android:id="@+id/add_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/add_widget" android:layout_marginTop="8dp"/>
-        <Button android:id="@+id/add_weekly_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:text="@string/add_weekly_widget" android:layout_marginTop="8dp"/>
-        <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#D5DFE2" android:textSize="14sp" android:gravity="center" android:padding="12dp"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dashboard_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_bg"
+    android:clipToPadding="true"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="18dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_title"
+            android:textColor="#FFFFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/intro"
+            android:textColor="#FFC6D1D5"
+            android:textSize="14sp" />
+
+        <include layout="@layout/widget_classic" android:layout_width="match_parent" android:layout_height="190dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/dashboard_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/weather_section" android:textColor="#FFFFFFFF" android:textSize="19sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="@string/weather_section_description" android:textColor="#FF9EADB3" android:textSize="13sp" />
+            <EditText android:id="@+id/city_input" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp" android:backgroundTint="@color/htc_green" android:hint="@string/city_hint" android:inputType="textCapWords" android:singleLine="true" android:textColor="#FFFFFFFF" android:textColorHint="#FF9EADB3" />
+            <Button android:id="@+id/refresh_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:backgroundTint="@color/htc_green" android:text="@string/refresh" android:textColor="#FF101718" />
+            <Button android:id="@+id/weather_details_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/weather_details" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/dashboard_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/clock_section" android:textColor="#FFFFFFFF" android:textSize="19sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="@string/clock_section_description" android:textColor="#FF9EADB3" android:textSize="13sp" />
+            <Button android:id="@+id/alarms_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="10dp" android:text="@string/open_alarms" />
+            <Button android:id="@+id/add_alarm_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/add_alarm" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/dashboard_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/widgets_section" android:textColor="#FFFFFFFF" android:textSize="19sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="@string/widgets_section_description" android:textColor="#FF9EADB3" android:textSize="13sp" />
+            <Button android:id="@+id/add_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="10dp" android:text="@string/add_widget" />
+            <Button android:id="@+id/add_weekly_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/add_weekly_widget" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/dashboard_card"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/information_section" android:textColor="#FFFFFFFF" android:textSize="17sp" android:textStyle="bold" />
+            <TextView android:id="@+id/last_updated" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="@string/no_weather_update" android:textColor="#FFC6D1D5" android:textSize="13sp" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/weather_source" android:textColor="#FF9EADB3" android:textSize="13sp" />
+            <TextView android:id="@+id/app_version" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="#FF9EADB3" android:textSize="13sp" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="14dp" android:textColor="#FFD5DFE2" android:textSize="14sp" />
     </LinearLayout>
 </ScrollView>

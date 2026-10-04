@@ -1,12 +1,9 @@
 package fr.papycha.htcweatherclock.widget
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
-import fr.papycha.htcweatherclock.MainActivity
 import fr.papycha.htcweatherclock.R
 import fr.papycha.htcweatherclock.storage.WidgetPreferences
 import fr.papycha.htcweatherclock.weather.ForecastDayFormatter
@@ -44,12 +41,11 @@ object WeeklyWidgetRenderer {
                 }
             }
 
-            val openIntent = Intent(context, MainActivity::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setOnClickPendingIntent(R.id.widget_root, PendingIntent.getActivity(context, appWidgetId, openIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
-            val refreshIntent = Intent(context, WidgetRefreshReceiver::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            val refreshPendingIntent = PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            setOnClickPendingIntent(R.id.current_weather_panel, refreshPendingIntent)
-            setOnClickPendingIntent(R.id.forecast_panel, refreshPendingIntent)
+            setOnClickPendingIntent(R.id.widget_root, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.ALARMS))
+            val weatherCity = WidgetActionSpec.weatherCity(WidgetPreferences.city(context, appWidgetId), weather?.city)
+            val weatherPendingIntent = WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity)
+            setOnClickPendingIntent(R.id.current_weather_panel, weatherPendingIntent)
+            setOnClickPendingIntent(R.id.forecast_panel, weatherPendingIntent)
         }
     }
 }

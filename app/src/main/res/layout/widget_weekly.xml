@@ -72,5 +72,5 @@
         </FrameLayout>
     </LinearLayout>
 
-    <ImageView android:id="@+id/weather_icon" android:layout_width="170dp" android:layout_height="118dp" android:layout_gravity="top|center_horizontal" android:layout_marginTop="78dp" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_03" />
+    <ImageView android:id="@+id/weather_icon" android:layout_width="170dp" android:layout_height="118dp" android:layout_gravity="top|center_horizontal" android:layout_marginTop="86dp" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_03" />
 </FrameLayout>

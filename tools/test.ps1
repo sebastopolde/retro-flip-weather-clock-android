@@ -4,6 +4,11 @@ $forbiddenRemoteViews = Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\
     Select-String -Pattern '<View(?:\s|>)'
 if ($forbiddenRemoteViews) { throw "Vue interdite dans un layout RemoteViews : $($forbiddenRemoteViews.Path):$($forbiddenRemoteViews.LineNumber)" }
 $androidNamespace = 'http://schemas.android.com/apk/res/android'
+[xml]$manifest = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\src\main\AndroidManifest.xml')
+$manifestNamespace = New-Object System.Xml.XmlNamespaceManager($manifest.NameTable)
+$manifestNamespace.AddNamespace('android', $androidNamespace)
+$alarmPermission = $manifest.SelectSingleNode("/manifest/uses-permission[@android:name='com.android.alarm.permission.SET_ALARM']", $manifestNamespace)
+if (-not $alarmPermission) { throw "La permission Android d'ajout d'alarme est absente du manifeste." }
 Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\layout') -Filter 'widget_*.xml' | ForEach-Object {
     [xml]$layout = Get-Content -Raw -LiteralPath $_.FullName
     $missingDimensions = @($layout.SelectNodes('//*') | Where-Object {
@@ -36,6 +41,11 @@ if ($weeklyClockNodes.Count -ne 2 -or @($weeklyClockNodes | Where-Object { $_.Ge
 if ($weeklyInfo.'appwidget-provider'.GetAttribute('targetCellHeight', $androidNamespace) -ne '4') {
     throw 'Le widget hebdomadaire doit cibler une hauteur de quatre cellules.'
 }
+[xml]$classicInfo = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\src\main\res\xml\flip_clock_widget_info.xml')
+if ($classicInfo.'appwidget-provider'.GetAttribute('targetCellHeight', $androidNamespace) -ne '3' -or
+    $classicInfo.'appwidget-provider'.GetAttribute('resizeMode', $androidNamespace) -notmatch 'vertical') {
+    throw 'Le widget classique doit réellement conserver son format 4×3 redimensionnable.'
+}
 & (Join-Path $PSScriptRoot 'build.ps1')
 . (Join-Path $PSScriptRoot 'env.ps1')
 $cache = Join-Path $env:USERPROFILE '.gradle\caches\modules-2\files-2.1'
@@ -50,6 +60,7 @@ $classpath = @(
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetKindSelectorTest `
+    fr.papycha.htcweatherclock.widget.WidgetActionSpecTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
     fr.papycha.htcweatherclock.weather.HtcWeatherPresentationTest `

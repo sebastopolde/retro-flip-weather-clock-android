@@ -1,12 +1,9 @@
 package fr.papycha.htcweatherclock.widget
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
-import fr.papycha.htcweatherclock.MainActivity
 import fr.papycha.htcweatherclock.R
 import fr.papycha.htcweatherclock.storage.WidgetPreferences
 import fr.papycha.htcweatherclock.weather.HtcWeatherPresentation
@@ -27,10 +24,9 @@ object WidgetRenderer {
             setTextViewText(R.id.city, weather?.city ?: context.getString(R.string.tap_to_configure))
             setTextViewText(R.id.condition, visual?.label ?: context.getString(R.string.weather_offline))
             setTextViewText(R.id.range, weather?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°")
-            val openIntent = Intent(context, MainActivity::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setOnClickPendingIntent(R.id.widget_root, PendingIntent.getActivity(context, appWidgetId, openIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
-            val refreshIntent = Intent(context, WidgetRefreshReceiver::class.java).putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setOnClickPendingIntent(R.id.weather_panel, PendingIntent.getBroadcast(context, appWidgetId, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+            setOnClickPendingIntent(R.id.widget_root, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.ALARMS))
+            val weatherCity = WidgetActionSpec.weatherCity(WidgetPreferences.city(context, appWidgetId), weather?.city)
+            setOnClickPendingIntent(R.id.weather_panel, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity))
         }
     }
 }
