@@ -20,6 +20,7 @@ object WeeklyWidgetRenderer {
 
     fun render(context: Context, appWidgetId: Int): RemoteViews {
         val weather = WidgetPreferences.weather(context, appWidgetId)
+        val location = WidgetPreferences.location(context, appWidgetId)
         val visual = weather?.let { HtcWeatherPresentation.forWmo(it.weatherCode) }
         val forecast = WeeklyWeatherFormatter.visibleForecast(weather?.forecast.orEmpty())
         return RemoteViews(context.packageName, R.layout.widget_weekly).apply {
@@ -43,7 +44,7 @@ object WeeklyWidgetRenderer {
 
             setOnClickPendingIntent(R.id.widget_root, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.ALARMS))
             val weatherCity = WidgetActionSpec.weatherCity(WidgetPreferences.city(context, appWidgetId), weather?.city)
-            val weatherPendingIntent = WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity)
+            val weatherPendingIntent = WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity, location)
             setOnClickPendingIntent(R.id.current_weather_panel, weatherPendingIntent)
             setOnClickPendingIntent(R.id.forecast_panel, weatherPendingIntent)
         }

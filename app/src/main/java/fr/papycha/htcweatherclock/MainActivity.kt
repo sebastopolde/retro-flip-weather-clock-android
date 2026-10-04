@@ -104,7 +104,11 @@ open class MainActivity : Activity() {
             }
         }
         findViewById<Button>(R.id.weather_details_button).setOnClickListener {
-            ExternalActionLauncher.showWeather(this, input.text.toString())
+            ExternalActionLauncher.showWeather(
+                this,
+                pendingLocation ?: WidgetPreferences.location(this, activeWidgetId),
+                input.text.toString()
+            )
         }
         findViewById<Button>(R.id.alarms_button).setOnClickListener { ExternalActionLauncher.showAlarms(this) }
         findViewById<Button>(R.id.add_alarm_button).setOnClickListener { ExternalActionLauncher.addAlarm(this) }

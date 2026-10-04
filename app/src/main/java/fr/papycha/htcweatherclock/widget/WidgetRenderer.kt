@@ -17,6 +17,7 @@ object WidgetRenderer {
         val width = manager.getAppWidgetOptions(appWidgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250)
         val layout = when (WidgetLayoutSelector.select(width, Build.VERSION.SDK_INT)) { WidgetLayout.COMPACT -> R.layout.widget_compact; WidgetLayout.CLASSIC -> R.layout.widget_classic; WidgetLayout.WIDE -> R.layout.widget_wide }
         val weather = WidgetPreferences.weather(context, appWidgetId)
+        val location = WidgetPreferences.location(context, appWidgetId)
         return RemoteViews(context.packageName, layout).apply {
             val visual = weather?.let { HtcWeatherPresentation.forWmo(it.weatherCode) }
             setImageViewResource(R.id.weather_icon, HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
@@ -26,7 +27,7 @@ object WidgetRenderer {
             setTextViewText(R.id.range, weather?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°")
             setOnClickPendingIntent(R.id.widget_root, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.ALARMS))
             val weatherCity = WidgetActionSpec.weatherCity(WidgetPreferences.city(context, appWidgetId), weather?.city)
-            setOnClickPendingIntent(R.id.weather_panel, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity))
+            setOnClickPendingIntent(R.id.weather_panel, WidgetActionActivity.pendingIntent(context, appWidgetId, WidgetAction.WEATHER_DETAILS, weatherCity, location))
         }
     }
 }

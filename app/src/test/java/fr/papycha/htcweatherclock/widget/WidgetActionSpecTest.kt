@@ -1,21 +1,42 @@
 package fr.papycha.htcweatherclock.widget
 
+import fr.papycha.htcweatherclock.weather.ResolvedLocation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class WidgetActionSpecTest {
-    @Test fun weatherPageEncodesTheConfiguredCity() {
+    @Test fun weatherPageOpensWindyAtTheExactResolvedCoordinates() {
         assertEquals(
-            "https://www.google.com/search?q=m%C3%A9t%C3%A9o+Saint-Maurice-Montcouronne",
-            WidgetActionSpec.weatherUrl("Saint-Maurice-Montcouronne")
+            "https://www.windy.com/48.85660/2.35220?48.85660,2.35220,11",
+            WidgetActionSpec.weatherUrl(
+                ResolvedLocation("Paris", 48.8566, 2.3522),
+                fallbackCity = "Paris"
+            )
         )
     }
 
-    @Test fun weatherPageFallsBackToParisForABlankCity() {
+    @Test fun weatherPageKeepsNegativeCoordinatesAndDecimalPoints() {
         assertEquals(
-            "https://www.google.com/search?q=m%C3%A9t%C3%A9o+Paris",
-            WidgetActionSpec.weatherUrl("   ")
+            "https://www.windy.com/-33.86880/151.20930?-33.86880,151.20930,11",
+            WidgetActionSpec.weatherUrl(
+                ResolvedLocation("Sydney", -33.8688, 151.2093),
+                fallbackCity = "Sydney"
+            )
+        )
+    }
+
+    @Test fun legacyWeatherPageFallsBackToAWindyLocationSearch() {
+        assertEquals(
+            "https://www.windy.com/search?query=Saint-Maurice-Montcouronne",
+            WidgetActionSpec.weatherUrl(location = null, fallbackCity = "Saint-Maurice-Montcouronne")
+        )
+    }
+
+    @Test fun blankLegacyWeatherPageFallsBackToParis() {
+        assertEquals(
+            "https://www.windy.com/search?query=Paris",
+            WidgetActionSpec.weatherUrl(location = null, fallbackCity = "   ")
         )
     }
 

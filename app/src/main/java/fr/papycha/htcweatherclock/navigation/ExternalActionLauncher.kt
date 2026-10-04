@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.AlarmClock
 import fr.papycha.htcweatherclock.MainActivity
+import fr.papycha.htcweatherclock.weather.ResolvedLocation
 import fr.papycha.htcweatherclock.widget.WidgetActionSpec
 
 object ExternalActionLauncher {
@@ -21,8 +22,8 @@ object ExternalActionLauncher {
         showAlarms(context)
     }
 
-    fun showWeather(context: Context, city: String) {
-        if (start(context, Intent(Intent.ACTION_VIEW, Uri.parse(WidgetActionSpec.weatherUrl(city))))) return
+    fun showWeather(context: Context, location: ResolvedLocation?, fallbackCity: String) {
+        if (start(context, Intent(Intent.ACTION_VIEW, Uri.parse(WidgetActionSpec.weatherUrl(location, fallbackCity))))) return
         openDashboard(context)
     }
 
