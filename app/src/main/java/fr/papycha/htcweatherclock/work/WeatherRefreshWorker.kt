@@ -13,7 +13,8 @@ class WeatherRefreshWorker(context: Context, params: WorkerParameters) : Worker(
         val id = inputData.getInt(KEY_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID) return Result.failure()
         val previous = WidgetPreferences.weather(applicationContext, id)
-        val result = OpenMeteoClient.fetch(WidgetPreferences.city(applicationContext, id), previous)
+        val result = WidgetPreferences.location(applicationContext, id)?.let { OpenMeteoClient.fetch(it, previous) }
+            ?: OpenMeteoClient.fetch(WidgetPreferences.city(applicationContext, id), previous)
         result.snapshot?.let { WidgetPreferences.setWeather(applicationContext, it, id) }
         AppWidgetManager.getInstance(applicationContext).updateAppWidget(id, WidgetRenderer.render(applicationContext, id))
         return when (RefreshDecision.from(result)) {

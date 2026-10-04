@@ -44,7 +44,9 @@
             android:padding="16dp">
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/weather_section" android:textColor="#FFFFFFFF" android:textSize="19sp" android:textStyle="bold" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="@string/weather_section_description" android:textColor="#FF9EADB3" android:textSize="13sp" />
-            <EditText android:id="@+id/city_input" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp" android:backgroundTint="@color/htc_green" android:hint="@string/city_hint" android:inputType="textCapWords" android:singleLine="true" android:textColor="#FFFFFFFF" android:textColorHint="#FF9EADB3" />
+            <EditText android:id="@+id/city_input" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp" android:backgroundTint="@color/htc_green" android:hint="@string/city_hint" android:inputType="textPostalAddress" android:singleLine="true" android:textColor="#FFFFFFFF" android:textColorHint="#FF9EADB3" />
+            <Button android:id="@+id/test_address_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:text="@string/test_address" />
+            <Button android:id="@+id/location_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/use_my_location" />
             <Button android:id="@+id/refresh_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:backgroundTint="@color/htc_green" android:text="@string/refresh" android:textColor="#FF101718" />
             <Button android:id="@+id/weather_details_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/weather_details" />
         </LinearLayout>

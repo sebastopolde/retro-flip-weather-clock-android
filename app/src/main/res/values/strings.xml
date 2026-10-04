@@ -4,7 +4,9 @@
     <string name="weekly_widget_name">Horloge HTC + météo 4 jours</string>
     <string name="tap_to_configure">Touchez pour configurer</string>
     <string name="weather_offline">Météo hors ligne</string>
-    <string name="city_hint">Ville (ex. Paris)</string>
+    <string name="city_hint">Adresse ou ville</string>
+    <string name="test_address">Tester l’adresse</string>
+    <string name="use_my_location">Utiliser ma position</string>
     <string name="refresh">Actualiser la météo</string>
     <string name="add_widget">Ajouter le widget classique 4×3</string>
     <string name="add_weekly_widget">Ajouter le widget hebdomadaire 4×4</string>
@@ -17,7 +19,20 @@
     <string name="intro">Gérez la météo, les alarmes et les deux formats de widget HTC depuis un seul écran.</string>
     <string name="dashboard_title">Horloge météo HTC</string>
     <string name="weather_section">Météo</string>
-    <string name="weather_section_description">Choisissez votre ville, actualisez les données ou consultez les prévisions détaillées.</string>
+    <string name="weather_section_description">Saisissez une adresse complète ou utilisez votre position. Testez-la avant de l’enregistrer.</string>
+    <string name="address_required">Saisissez d’abord une adresse ou une ville.</string>
+    <string name="testing_address">Recherche et test de l’adresse…</string>
+    <string name="address_not_found">Adresse non reconnue. Ajoutez la commune et le code postal.</string>
+    <string name="address_network_error">Impossible de tester l’adresse : vérifiez votre connexion Internet.</string>
+    <string name="address_service_error">Le service d’adresses ne répond pas correctement. Réessayez plus tard.</string>
+    <string name="address_recognized">Adresse reconnue : %1$s</string>
+    <string name="address_saved">Adresse enregistrée : %1$s</string>
+    <string name="weather_validation_failed">Adresse reconnue (%1$s), mais la météo est momentanément indisponible.</string>
+    <string name="locating">Recherche de votre position…</string>
+    <string name="location_permission_denied">Autorisation refusée. Vous pouvez toujours saisir l’adresse manuellement.</string>
+    <string name="location_unavailable">Position indisponible. Vérifiez que la localisation du téléphone est activée.</string>
+    <string name="location_recognized">Position reconnue : %1$s. Appuyez sur Actualiser pour l’enregistrer.</string>
+    <string name="location_weather_unavailable">Position trouvée (%1$s), mais la météo est momentanément indisponible.</string>
     <string name="weather_details">Voir la météo détaillée</string>
     <string name="clock_section">Horloge et alarmes</string>
     <string name="clock_section_description">Accédez directement à l’horloge Android et à vos alarmes.</string>
@@ -28,6 +43,6 @@
     <string name="information_section">Informations</string>
     <string name="no_weather_update">Aucune météo enregistrée.</string>
     <string name="last_updated_format">Dernière actualisation : %1$s</string>
-    <string name="weather_source">Données météo : Open‑Meteo</string>
+    <string name="weather_source">Météo : Open‑Meteo · Adresses : OpenStreetMap</string>
     <string name="version_format">Version %1$s</string>
 </resources>

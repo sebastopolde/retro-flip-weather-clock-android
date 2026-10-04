@@ -9,6 +9,11 @@ $manifestNamespace = New-Object System.Xml.XmlNamespaceManager($manifest.NameTab
 $manifestNamespace.AddNamespace('android', $androidNamespace)
 $alarmPermission = $manifest.SelectSingleNode("/manifest/uses-permission[@android:name='com.android.alarm.permission.SET_ALARM']", $manifestNamespace)
 if (-not $alarmPermission) { throw "La permission Android d'ajout d'alarme est absente du manifeste." }
+$application = $manifest.SelectSingleNode('/manifest/application')
+if ($application.GetAttribute('fullBackupContent', $androidNamespace) -ne '@xml/backup_rules' -or
+    $application.GetAttribute('dataExtractionRules', $androidNamespace) -ne '@xml/data_extraction_rules') {
+    throw 'Les adresses et coordonnées doivent être exclues des sauvegardes Android.'
+}
 Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\layout') -Filter 'widget_*.xml' | ForEach-Object {
     [xml]$layout = Get-Content -Raw -LiteralPath $_.FullName
     $missingDimensions = @($layout.SelectNodes('//*') | Where-Object {
@@ -58,15 +63,19 @@ $classpath = @(
     $junit; $hamcrest; $kotlin
 ) -join [IO.Path]::PathSeparator
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
+    fr.papycha.htcweatherclock.RequestGateTest `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetKindSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetActionSpecTest `
     fr.papycha.htcweatherclock.clock.ClockFormatterTest `
+    fr.papycha.htcweatherclock.location.LocationProviderSpecTest `
     fr.papycha.htcweatherclock.weather.WeatherRepositoryTest `
+    fr.papycha.htcweatherclock.weather.GeocodingSpecTest `
     fr.papycha.htcweatherclock.weather.HtcWeatherPresentationTest `
     fr.papycha.htcweatherclock.weather.ForecastDayFormatterTest `
     fr.papycha.htcweatherclock.weather.WeeklyWeatherFormatterTest `
     fr.papycha.htcweatherclock.storage.WeatherStorageCodecTest `
+    fr.papycha.htcweatherclock.storage.LocationStorageCodecTest `
     fr.papycha.htcweatherclock.storage.ForecastStorageCodecTest `
     fr.papycha.htcweatherclock.work.RefreshDecisionTest
 if ($LASTEXITCODE -ne 0) { throw "Échec JUnit (code $LASTEXITCODE)." }
