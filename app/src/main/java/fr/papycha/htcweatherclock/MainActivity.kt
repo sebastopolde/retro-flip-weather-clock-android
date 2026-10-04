@@ -80,7 +80,7 @@ open class MainActivity : Activity() {
         renderPreview()
         findViewById<TextView>(R.id.app_version).text = getString(R.string.version_format, BuildConfig.VERSION_NAME)
 
-        testAddressButton.setOnClickListener { validateAddress(save = false) }
+        testAddressButton.setOnClickListener { validateAddress(AddressValidationTrigger.TEST_ADDRESS) }
         locationButton.setOnClickListener { requestLocationFromUser() }
         refreshButton.setOnClickListener { saveCurrentLocation() }
 
@@ -110,15 +110,14 @@ open class MainActivity : Activity() {
                 input.text.toString()
             )
         }
-        findViewById<Button>(R.id.alarms_button).setOnClickListener { ExternalActionLauncher.showAlarms(this) }
-        findViewById<Button>(R.id.add_alarm_button).setOnClickListener { ExternalActionLauncher.addAlarm(this) }
     }
 
     protected fun saveCurrentLocation(onComplete: (Boolean) -> Unit = {}) =
-        validateAddress(save = true, onComplete = onComplete)
+        validateAddress(AddressValidationTrigger.REFRESH, onComplete)
 
-    private fun validateAddress(save: Boolean, onComplete: (Boolean) -> Unit = {}) {
+    private fun validateAddress(trigger: AddressValidationTrigger, onComplete: (Boolean) -> Unit = {}) {
         val address = input.text.toString().trim()
+        val successAction = AddressValidationAction.forTrigger(trigger)
         setAddressRecognized(false)
         if (address.isEmpty()) {
             status.text = getString(R.string.address_required)
@@ -153,12 +152,10 @@ open class MainActivity : Activity() {
                 if (result?.fresh == true && result.snapshot != null) {
                     renderPreview(result.snapshot)
                     setAddressRecognized(true)
-                    if (save) {
+                    if (successAction == AddressValidationAction.APPLY_AND_REFRESH) {
                         WidgetPreferences.setConfiguration(this, location, result.snapshot, activeWidgetId)
                         updateInstalledWidgets()
                         status.text = getString(R.string.address_saved, location.label)
-                    } else {
-                        status.text = getString(R.string.address_recognized, location.label)
                     }
                     onComplete(true)
                 } else {

@@ -63,6 +63,7 @@ $classpath = @(
     $junit; $hamcrest; $kotlin
 ) -join [IO.Path]::PathSeparator
 & (Join-Path $env:JAVA_HOME 'bin\java.exe') -cp $classpath org.junit.runner.JUnitCore `
+    fr.papycha.htcweatherclock.AddressValidationActionTest `
     fr.papycha.htcweatherclock.RequestGateTest `
     fr.papycha.htcweatherclock.PreviewPageSelectorTest `
     fr.papycha.htcweatherclock.widget.WidgetLayoutSelectorTest `
