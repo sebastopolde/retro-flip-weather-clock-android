@@ -2,6 +2,7 @@
     <string name="app_name">Horloge météo HTC moderne</string>
     <string name="widget_name">Horloge météo rabattable</string>
     <string name="weekly_widget_name">Horloge HTC + météo 4 jours</string>
+    <string name="compact_weekly_widget_name">HTC Horloge + météo compacte 4×3</string>
     <string name="tap_to_configure">Touchez pour configurer</string>
     <string name="weather_offline">Météo hors ligne</string>
     <string name="city_hint">Adresse ou ville</string>
@@ -10,6 +11,7 @@
     <string name="refresh">Actualiser la météo</string>
     <string name="add_widget">Ajouter le widget classique 4×3</string>
     <string name="add_weekly_widget">Ajouter le widget hebdomadaire 4×4</string>
+    <string name="add_compact_weekly_widget">Ajouter le widget compact 4×3</string>
     <string name="save_widget">Enregistrer le widget</string>
     <string name="loading">Connexion à Open‑Meteo…</string>
     <string name="updated">Météo actualisée.</string>
@@ -17,7 +19,7 @@
     <string name="confirm_on_launcher">Confirmez l’ajout sur l’écran d’accueil.</string>
     <string name="widget_added">Widget ajouté à l’écran d’accueil.</string>
     <string name="manual_widget_help">Ajoutez l’un des widgets HTC depuis le sélecteur de widgets.</string>
-    <string name="intro">Gérez la météo et les deux formats de widget HTC depuis un seul écran.</string>
+    <string name="intro">Gérez la météo et les trois formats de widget HTC depuis un seul écran.</string>
     <string name="dashboard_title">Horloge météo HTC</string>
     <string name="weather_section">Météo</string>
     <string name="weather_section_description">Saisissez une adresse complète ou utilisez votre position. Une adresse reconnue est appliquée automatiquement.</string>
@@ -40,12 +42,13 @@
     <string name="open_alarms">Afficher les alarmes</string>
     <string name="add_alarm">Ajouter une alarme</string>
     <string name="widgets_section">Widgets</string>
-    <string name="widgets_section_description">Les deux formats restent disponibles et peuvent être redimensionnés depuis l’écran d’accueil.</string>
+    <string name="widgets_section_description">Les trois formats restent disponibles et peuvent être redimensionnés depuis l’écran d’accueil.</string>
     <string name="information_section">Informations</string>
     <string name="no_weather_update">Aucune météo enregistrée.</string>
     <string name="last_updated_format">Dernière actualisation : %1$s</string>
     <string name="weather_source">Météo : Open‑Meteo · Adresses : OpenStreetMap</string>
     <string name="version_format">Version %1$s</string>
-    <string name="preview_classic_indicator">4×3   ● ○   Glissez ↔</string>
-    <string name="preview_weekly_indicator">4×4   ○ ●   Glissez ↔</string>
+    <string name="preview_classic_indicator">4×3 classique   ● ○ ○   Glissez →</string>
+    <string name="preview_weekly_indicator">←   ○ ● ○   4×4 semaine   →</string>
+    <string name="preview_compact_weekly_indicator">← Glissez   ○ ○ ●   4×3 compact</string>
 </resources>

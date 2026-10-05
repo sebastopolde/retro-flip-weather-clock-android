@@ -46,6 +46,22 @@ if ($weeklyClockNodes.Count -ne 2 -or @($weeklyClockNodes | Where-Object { $_.Ge
 if ($weeklyInfo.'appwidget-provider'.GetAttribute('targetCellHeight', $androidNamespace) -ne '4') {
     throw 'Le widget hebdomadaire doit cibler une hauteur de quatre cellules.'
 }
+[xml]$compactWeeklyInfo = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\src\main\res\xml\compact_weekly_widget_info.xml')
+if ($compactWeeklyInfo.'appwidget-provider'.GetAttribute('targetCellHeight', $androidNamespace) -ne '3' -or
+    $compactWeeklyInfo.'appwidget-provider'.GetAttribute('minResizeHeight', $androidNamespace) -ne '180dp' -or
+    $compactWeeklyInfo.'appwidget-provider'.GetAttribute('initialLayout', $androidNamespace) -ne '@layout/widget_weekly_compact') {
+    throw 'Le widget compact hebdomadaire doit être une variante indépendante 4×3.'
+}
+[xml]$compactWeeklyLayout = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\src\main\res\layout\widget_weekly_compact.xml')
+$compactNamespaceManager = New-Object System.Xml.XmlNamespaceManager($compactWeeklyLayout.NameTable)
+$compactNamespaceManager.AddNamespace('android', $androidNamespace)
+$compactIds = @($compactWeeklyLayout.SelectNodes('//*[@android:id]', $compactNamespaceManager) | ForEach-Object {
+    $_.GetAttribute('id', $androidNamespace)
+})
+$compactForecastColumns = @($compactIds | Where-Object { $_ -match '^@\+id/day_\d+$' })
+if (Compare-Object $compactForecastColumns @('@+id/day_1', '@+id/day_2', '@+id/day_3', '@+id/day_4')) {
+    throw 'Le widget compact doit conserver exactement quatre jours de prévision.'
+}
 [xml]$classicInfo = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\src\main\res\xml\flip_clock_widget_info.xml')
 if ($classicInfo.'appwidget-provider'.GetAttribute('targetCellHeight', $androidNamespace) -ne '3' -or
     $classicInfo.'appwidget-provider'.GetAttribute('resizeMode', $androidNamespace) -notmatch 'vertical') {

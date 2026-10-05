@@ -28,6 +28,13 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/weekly_weather_widget_info"/>
         </receiver>
+        <receiver android:name=".widget.CompactWeeklyWidgetProvider" android:exported="true" android:label="@string/compact_weekly_widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/compact_weekly_widget_info"/>
+        </receiver>
         <receiver android:name=".widget.WidgetRefreshReceiver" android:exported="false"/>
     </application>
 </manifest>

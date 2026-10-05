@@ -8,6 +8,10 @@ class WidgetKindSelectorTest {
         assertEquals(WidgetKind.WEEKLY, WidgetKindSelector.fromProvider("fr.papycha.htcweatherclock.widget.WeeklyWeatherWidgetProvider"))
     }
 
+    @Test fun compactWeeklyProviderSelectsCompactWeeklyRenderer() {
+        assertEquals(WidgetKind.COMPACT_WEEKLY, WidgetKindSelector.fromProvider("fr.papycha.htcweatherclock.widget.CompactWeeklyWidgetProvider"))
+    }
+
     @Test fun classicAndMissingProvidersKeepClassicRenderer() {
         assertEquals(WidgetKind.CLASSIC, WidgetKindSelector.fromProvider("fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider"))
         assertEquals(WidgetKind.CLASSIC, WidgetKindSelector.fromProvider(null))

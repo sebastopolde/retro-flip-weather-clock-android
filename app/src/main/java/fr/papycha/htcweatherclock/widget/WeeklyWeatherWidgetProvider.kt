@@ -6,7 +6,7 @@ import android.content.Context
 import fr.papycha.htcweatherclock.storage.WidgetPreferences
 import fr.papycha.htcweatherclock.work.RefreshScheduler
 
-class WeeklyWeatherWidgetProvider : AppWidgetProvider() {
+open class ForecastWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         ids.forEach { id ->
             manager.updateAppWidget(id, WidgetRenderer.render(context, id))
@@ -24,3 +24,7 @@ class WeeklyWeatherWidgetProvider : AppWidgetProvider() {
         WidgetPreferences.delete(context, it)
     }
 }
+
+class WeeklyWeatherWidgetProvider : ForecastWidgetProvider()
+
+class CompactWeeklyWidgetProvider : ForecastWidgetProvider()

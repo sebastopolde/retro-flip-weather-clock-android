@@ -5,13 +5,15 @@ import org.junit.Test
 
 class PreviewPageSelectorTest {
     @Test
-    fun `swipe left opens weekly preview and cannot go beyond it`() {
+    fun `successive left swipes open weekly then compact previews`() {
         assertEquals(1, PreviewPageSelector.afterSwipe(currentPage = 0, deltaX = -180f))
-        assertEquals(1, PreviewPageSelector.afterSwipe(currentPage = 1, deltaX = -180f))
+        assertEquals(2, PreviewPageSelector.afterSwipe(currentPage = 1, deltaX = -180f))
+        assertEquals(2, PreviewPageSelector.afterSwipe(currentPage = 2, deltaX = -180f))
     }
 
     @Test
-    fun `swipe right returns to classic preview and cannot go before it`() {
+    fun `successive right swipes return from compact to classic preview`() {
+        assertEquals(1, PreviewPageSelector.afterSwipe(currentPage = 2, deltaX = 180f))
         assertEquals(0, PreviewPageSelector.afterSwipe(currentPage = 1, deltaX = 180f))
         assertEquals(0, PreviewPageSelector.afterSwipe(currentPage = 0, deltaX = 180f))
     }
@@ -20,6 +22,7 @@ class PreviewPageSelectorTest {
     fun `short movement does not change preview`() {
         assertEquals(0, PreviewPageSelector.afterSwipe(currentPage = 0, deltaX = -30f))
         assertEquals(1, PreviewPageSelector.afterSwipe(currentPage = 1, deltaX = 30f))
+        assertEquals(2, PreviewPageSelector.afterSwipe(currentPage = 2, deltaX = 30f))
     }
 
     @Test

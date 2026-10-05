@@ -73,6 +73,19 @@
                         android:layout_height="300dp"
                         android:layout_gravity="center" />
                 </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/compact_weekly_preview_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include
+                        android:id="@+id/compact_weekly_preview"
+                        layout="@layout/widget_weekly_compact"
+                        android:layout_width="match_parent"
+                        android:layout_height="215dp"
+                        android:layout_gravity="center" />
+                </FrameLayout>
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -114,6 +127,7 @@
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:text="@string/widgets_section_description" android:textColor="#FF9EADB3" android:textSize="13sp" />
             <Button android:id="@+id/add_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="10dp" android:text="@string/add_widget" />
             <Button android:id="@+id/add_weekly_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/add_weekly_widget" />
+            <Button android:id="@+id/add_compact_weekly_widget_button" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="6dp" android:text="@string/add_compact_weekly_widget" />
         </LinearLayout>
 
         <LinearLayout

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:padding="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.05"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:layout_weight="1">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+                    <ImageView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitXY" android:src="@drawable/clock_weather_clock_tab_up" />
+                    <ImageView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitXY" android:src="@drawable/clock_weather_clock_tab_down" />
+                </LinearLayout>
+                <TextClock android:id="@+id/hour_panel" style="@style/HtcWeeklyFlipDigits" android:layout_width="match_parent" android:layout_height="match_parent" android:format12Hour="hh" android:format24Hour="HH" android:textSize="76sp" />
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+                    <ImageView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitXY" android:src="@drawable/clock_weather_clock_tab_up" />
+                    <ImageView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitXY" android:src="@drawable/clock_weather_clock_tab_down" />
+                </LinearLayout>
+                <TextClock android:id="@+id/minute_panel" style="@style/HtcWeeklyFlipDigits" android:layout_width="match_parent" android:layout_height="match_parent" android:format12Hour="mm" android:format24Hour="mm" android:textSize="76sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/current_weather_panel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="0.47"
+            android:background="@drawable/common_panel_dark"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:paddingStart="7dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="7dp"
+                android:paddingBottom="2dp">
+                <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical" android:orientation="vertical">
+                    <TextView android:id="@+id/widget_date" style="@style/HtcWeatherPrimary" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:text="sam. 3 oct" android:textSize="9sp" />
+                    <TextView android:id="@+id/city" style="@style/HtcWeatherPrimary" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:text="Saint-Maurice-Montcouronne" android:textSize="10sp" />
+                    <TextView android:id="@+id/condition" style="@style/HtcWeatherSecondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:text="Partiellement nuageux" android:textSize="8sp" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="70dp" android:layout_height="match_parent" android:gravity="center_vertical|end" android:orientation="vertical">
+                    <TextView android:id="@+id/temperature" style="@style/HtcWeatherPrimary" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="end" android:text="--°C" android:textSize="24sp" />
+                    <TextView android:id="@+id/range" style="@style/HtcWeatherSecondary" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="end" android:text="--° / --°" android:textSize="8sp" />
+                </LinearLayout>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/weather_icon"
+                android:layout_width="116dp"
+                android:layout_height="84dp"
+                android:layout_gravity="top|center_horizontal"
+                android:scaleType="fitCenter"
+                android:src="@drawable/weather_colorgraphic_xl_03"
+                android:translationY="-42dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/forecast_panel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="0.70">
+            <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginTop="16dp" android:background="@drawable/common_panel_dark" android:scaleType="fitXY" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:baselineAligned="false" android:orientation="horizontal" android:paddingStart="3dp" android:paddingEnd="3dp" android:paddingBottom="3dp">
+                <LinearLayout android:id="@+id/day_1" style="@style/HtcForecastColumn" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical"><ImageView android:id="@+id/day_1_icon" style="@style/HtcForecastIcon" android:layout_width="46dp" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_03" /><TextView android:id="@+id/day_1_label" style="@style/HtcCompactForecastDay" android:layout_width="match_parent" android:layout_height="wrap_content" /><TextView android:id="@+id/day_1_temperature" style="@style/HtcCompactForecastTemperature" android:layout_width="match_parent" android:layout_height="wrap_content" /></LinearLayout>
+                <LinearLayout android:id="@+id/day_2" style="@style/HtcForecastColumn" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical"><ImageView android:id="@+id/day_2_icon" style="@style/HtcForecastIcon" android:layout_width="46dp" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_07" /><TextView android:id="@+id/day_2_label" style="@style/HtcCompactForecastDay" android:layout_width="match_parent" android:layout_height="wrap_content" /><TextView android:id="@+id/day_2_temperature" style="@style/HtcCompactForecastTemperature" android:layout_width="match_parent" android:layout_height="wrap_content" /></LinearLayout>
+                <LinearLayout android:id="@+id/day_3" style="@style/HtcForecastColumn" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical"><ImageView android:id="@+id/day_3_icon" style="@style/HtcForecastIcon" android:layout_width="46dp" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_18" /><TextView android:id="@+id/day_3_label" style="@style/HtcCompactForecastDay" android:layout_width="match_parent" android:layout_height="wrap_content" /><TextView android:id="@+id/day_3_temperature" style="@style/HtcCompactForecastTemperature" android:layout_width="match_parent" android:layout_height="wrap_content" /></LinearLayout>
+                <LinearLayout android:id="@+id/day_4" style="@style/HtcForecastColumn" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical"><ImageView android:id="@+id/day_4_icon" style="@style/HtcForecastIcon" android:layout_width="46dp" android:layout_height="0dp" android:layout_weight="1" android:scaleType="fitCenter" android:src="@drawable/weather_colorgraphic_xl_01" /><TextView android:id="@+id/day_4_label" style="@style/HtcCompactForecastDay" android:layout_width="match_parent" android:layout_height="wrap_content" /><TextView android:id="@+id/day_4_temperature" style="@style/HtcCompactForecastTemperature" android:layout_width="match_parent" android:layout_height="wrap_content" /></LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

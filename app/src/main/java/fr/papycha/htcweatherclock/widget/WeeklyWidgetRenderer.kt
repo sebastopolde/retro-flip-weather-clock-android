@@ -18,12 +18,12 @@ object WeeklyWidgetRenderer {
     private val dayTemperatures = intArrayOf(R.id.day_1_temperature, R.id.day_2_temperature, R.id.day_3_temperature, R.id.day_4_temperature)
     private val dayColumns = intArrayOf(R.id.day_1, R.id.day_2, R.id.day_3, R.id.day_4)
 
-    fun render(context: Context, appWidgetId: Int): RemoteViews {
+    fun render(context: Context, appWidgetId: Int, layoutRes: Int = R.layout.widget_weekly): RemoteViews {
         val weather = WidgetPreferences.weather(context, appWidgetId)
         val location = WidgetPreferences.location(context, appWidgetId)
         val visual = weather?.let { HtcWeatherPresentation.forWmo(it.weatherCode) }
         val forecast = WeeklyWeatherFormatter.visibleForecast(weather?.forecast.orEmpty())
-        return RemoteViews(context.packageName, R.layout.widget_weekly).apply {
+        return RemoteViews(context.packageName, layoutRes).apply {
             setImageViewResource(R.id.weather_icon, HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
             setTextViewText(R.id.temperature, weather?.let { WeeklyWeatherFormatter.currentTemperature(it.temperature) } ?: "--°C")
             setTextViewText(R.id.city, weather?.city ?: context.getString(R.string.tap_to_configure))

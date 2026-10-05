@@ -32,6 +32,7 @@ import fr.papycha.htcweatherclock.weather.ResolvedLocation
 import fr.papycha.htcweatherclock.weather.WeatherSnapshot
 import fr.papycha.htcweatherclock.weather.WeeklyWeatherFormatter
 import fr.papycha.htcweatherclock.widget.FlipClockWidgetProvider
+import fr.papycha.htcweatherclock.widget.CompactWeeklyWidgetProvider
 import fr.papycha.htcweatherclock.widget.WeeklyWeatherWidgetProvider
 import fr.papycha.htcweatherclock.widget.WidgetPinResult
 import fr.papycha.htcweatherclock.widget.WidgetRenderer
@@ -101,6 +102,12 @@ open class MainActivity : Activity() {
             visibility = if (activeWidgetId == 0) View.VISIBLE else View.GONE
             setOnClickListener {
                 requestPinWithSavedConfiguration(status, WeeklyWeatherWidgetProvider::class.java)
+            }
+        }
+        findViewById<Button>(R.id.add_compact_weekly_widget_button).apply {
+            visibility = if (activeWidgetId == 0) View.VISIBLE else View.GONE
+            setOnClickListener {
+                requestPinWithSavedConfiguration(status, CompactWeeklyWidgetProvider::class.java)
             }
         }
         findViewById<Button>(R.id.weather_details_button).setOnClickListener {
@@ -220,6 +227,8 @@ open class MainActivity : Activity() {
         refreshButton.isEnabled = enabled
         input.isEnabled = enabled
         findViewById<Button>(R.id.add_widget_button).isEnabled = enabled
+        findViewById<Button>(R.id.add_weekly_widget_button).isEnabled = enabled
+        findViewById<Button>(R.id.add_compact_weekly_widget_button).isEnabled = enabled
     }
 
     private fun setAddressRecognized(recognized: Boolean) {
@@ -234,7 +243,8 @@ open class MainActivity : Activity() {
         val targets = WidgetSyncPlan.targets(
             activeWidgetId,
             manager.getAppWidgetIds(ComponentName(this, FlipClockWidgetProvider::class.java)),
-            manager.getAppWidgetIds(ComponentName(this, WeeklyWeatherWidgetProvider::class.java))
+            manager.getAppWidgetIds(ComponentName(this, WeeklyWeatherWidgetProvider::class.java)),
+            manager.getAppWidgetIds(ComponentName(this, CompactWeeklyWidgetProvider::class.java))
         )
         targets.forEach { widgetId ->
             if (activeWidgetId == 0) WidgetPreferences.copyGlobalConfiguration(this, widgetId)
@@ -253,18 +263,22 @@ open class MainActivity : Activity() {
         classic.findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
         classic.findViewById<TextView>(R.id.range).text = snapshot?.let { "${it.maximum}° / ${it.minimum}°" } ?: "--° / --°"
 
-        val weekly = findViewById<View>(R.id.weekly_preview)
-        weekly.findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(visual?.iconCode ?: 7))
-        weekly.findViewById<TextView>(R.id.temperature).text = snapshot?.let { WeeklyWeatherFormatter.currentTemperature(it.temperature) } ?: "--°C"
-        weekly.findViewById<TextView>(R.id.city).text = city
-        weekly.findViewById<TextView>(R.id.condition).text = visual?.label ?: getString(R.string.weather_offline)
-        weekly.findViewById<TextView>(R.id.range).text = snapshot?.let { WeeklyWeatherFormatter.currentRange(it.minimum, it.maximum) } ?: "--° / --°"
-        weekly.findViewById<TextView>(R.id.widget_date).text = WeeklyWeatherFormatter.date(System.currentTimeMillis())
-        renderWeeklyForecast(weekly, snapshot)
+        renderWeeklyPreview(findViewById(R.id.weekly_preview), snapshot, city, visual?.label, visual?.iconCode)
+        renderWeeklyPreview(findViewById(R.id.compact_weekly_preview), snapshot, city, visual?.label, visual?.iconCode)
         findViewById<TextView>(R.id.last_updated).text = snapshot?.let {
             val formatted = SimpleDateFormat("d MMM yyyy 'à' HH:mm", Locale.FRENCH).format(Date(it.updatedAt))
             getString(R.string.last_updated_format, formatted)
         } ?: getString(R.string.no_weather_update)
+    }
+
+    private fun renderWeeklyPreview(root: View, snapshot: WeatherSnapshot?, city: String, condition: String?, iconCode: Int?) {
+        root.findViewById<ImageView>(R.id.weather_icon).setImageResource(HtcWeatherDrawable.forCode(iconCode ?: 7))
+        root.findViewById<TextView>(R.id.temperature).text = snapshot?.let { WeeklyWeatherFormatter.currentTemperature(it.temperature) } ?: "--°C"
+        root.findViewById<TextView>(R.id.city).text = city
+        root.findViewById<TextView>(R.id.condition).text = condition ?: getString(R.string.weather_offline)
+        root.findViewById<TextView>(R.id.range).text = snapshot?.let { WeeklyWeatherFormatter.currentRange(it.minimum, it.maximum) } ?: "--° / --°"
+        root.findViewById<TextView>(R.id.widget_date).text = WeeklyWeatherFormatter.date(System.currentTimeMillis())
+        renderWeeklyForecast(root, snapshot)
     }
 
     private fun renderWeeklyForecast(root: View, snapshot: WeatherSnapshot?) {
@@ -291,6 +305,7 @@ open class MainActivity : Activity() {
         val pager = findViewById<HorizontalScrollView>(R.id.preview_pager)
         val classicPage = findViewById<View>(R.id.classic_preview_page)
         val weeklyPage = findViewById<View>(R.id.weekly_preview_page)
+        val compactPage = findViewById<View>(R.id.compact_weekly_preview_page)
         var touchStartX = 0f
         var touchStartPage = 0
         val swipeThresholdPx = 72f * resources.displayMetrics.density
@@ -299,16 +314,17 @@ open class MainActivity : Activity() {
             if (pageWidth <= 0) return@addOnLayoutChangeListener
             classicPage.layoutParams = classicPage.layoutParams.apply { width = pageWidth }
             weeklyPage.layoutParams = weeklyPage.layoutParams.apply { width = pageWidth }
+            compactPage.layoutParams = compactPage.layoutParams.apply { width = pageWidth }
         }
         pager.setOnScrollChangeListener { _, scrollX, _, _, _ ->
-            val page = if (pager.width > 0 && scrollX >= pager.width / 2) 1 else 0
+            val page = if (pager.width > 0) ((scrollX + pager.width / 2) / pager.width).coerceIn(0, PreviewPageSelector.PAGE_COUNT - 1) else 0
             updatePreviewIndicator(page)
         }
         pager.setOnTouchListener { _, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     touchStartX = event.x
-                    touchStartPage = if (pager.width > 0 && pager.scrollX >= pager.width / 2) 1 else 0
+                    touchStartPage = if (pager.width > 0) ((pager.scrollX + pager.width / 2) / pager.width).coerceIn(0, PreviewPageSelector.PAGE_COUNT - 1) else 0
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     val page = PreviewPageSelector.afterSwipe(touchStartPage, event.x - touchStartX, swipeThresholdPx)
@@ -319,7 +335,8 @@ open class MainActivity : Activity() {
             false
         }
         findViewById<TextView>(R.id.preview_indicator).setOnClickListener {
-            val next = if (pager.width > 0 && pager.scrollX < pager.width / 2) 1 else 0
+            val current = if (pager.width > 0) ((pager.scrollX + pager.width / 2) / pager.width).coerceIn(0, PreviewPageSelector.PAGE_COUNT - 1) else 0
+            val next = (current + 1) % PreviewPageSelector.PAGE_COUNT
             pager.smoothScrollTo(next * pager.width, 0)
             updatePreviewIndicator(next)
         }
@@ -327,11 +344,13 @@ open class MainActivity : Activity() {
     }
 
     private fun updatePreviewIndicator(page: Int) {
-        findViewById<TextView>(R.id.preview_indicator).setText(
-            if (page == 0) R.string.preview_classic_indicator else R.string.preview_weekly_indicator
-        )
+        findViewById<TextView>(R.id.preview_indicator).setText(when (page) {
+            0 -> R.string.preview_classic_indicator
+            1 -> R.string.preview_weekly_indicator
+            else -> R.string.preview_compact_weekly_indicator
+        })
         val pager = findViewById<HorizontalScrollView>(R.id.preview_pager)
-        val desiredHeight = ((if (page == 0) 200 else 310) * resources.displayMetrics.density).toInt()
+        val desiredHeight = ((when (page) { 0 -> 200; 1 -> 310; else -> 225 }) * resources.displayMetrics.density).toInt()
         if (pager.layoutParams.height != desiredHeight) {
             pager.layoutParams = pager.layoutParams.apply { height = desiredHeight }
         }

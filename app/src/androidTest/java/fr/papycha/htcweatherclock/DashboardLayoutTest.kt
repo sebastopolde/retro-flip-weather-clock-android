@@ -24,4 +24,15 @@ class DashboardLayoutTest {
             }
         }
     }
+
+    @Test fun dashboardOffersAllThreeWidgetVariants() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                assertTrue(activity.findViewById<View>(R.id.classic_preview_page).isShown)
+                assertTrue(activity.findViewById<View>(R.id.weekly_preview_page).isShown)
+                assertTrue(activity.findViewById<View>(R.id.compact_weekly_preview_page).isShown)
+                assertTrue(activity.findViewById<View>(R.id.add_compact_weekly_widget_button).isShown)
+            }
+        }
+    }
 }
