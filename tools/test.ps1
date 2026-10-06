@@ -1,5 +1,13 @@
 $ErrorActionPreference = 'Stop'
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
+$gitIgnore = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot '.gitignore')
+if ($gitIgnore -notmatch '(?m)^\.signing/$') { throw 'Le dossier de signature release doit être exclu de Git.' }
+$readme = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'README.md')
+if ($readme -notmatch 'sans affiliation avec HTC') { throw 'Le README public doit préciser la non-affiliation avec HTC.' }
+$gradleBuild = Get-Content -Raw -LiteralPath (Join-Path $ProjectRoot 'app\build.gradle.kts')
+if ($gradleBuild -notmatch 'release\.properties' -or $gradleBuild -notmatch 'signingConfig') {
+    throw 'La construction release signée doit être configurée sans secret dans Git.'
+}
 $forbiddenRemoteViews = Get-ChildItem (Join-Path $ProjectRoot 'app\src\main\res\layout') -Filter 'widget_*.xml' |
     Select-String -Pattern '<View(?:\s|>)'
 if ($forbiddenRemoteViews) { throw "Vue interdite dans un layout RemoteViews : $($forbiddenRemoteViews.Path):$($forbiddenRemoteViews.LineNumber)" }

@@ -9,4 +9,5 @@ reference/original/*.apk
 *.jks
 *.keystore
 artifacts/
-dist/*.apk
+dist/
+.signing/
